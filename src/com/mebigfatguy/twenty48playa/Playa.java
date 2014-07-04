@@ -74,7 +74,7 @@ public class Playa {
 						}
 						SquareType neighbor = getNextSquareType(board, x, y, d);
 						if (st == neighbor) {
-							if (st.ordinal() > bestCollision.ordinal()) {
+							if ((st.ordinal() > bestCollision.ordinal()) || ((st.ordinal() == bestCollision.ordinal()) && (d.ordinal() < bestDirection.ordinal()))) {
 								bestCollision = st;
 								bestDirection = d;
 							}
