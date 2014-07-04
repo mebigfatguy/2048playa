@@ -20,6 +20,7 @@ import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +32,12 @@ public class Playa {
 	
 	private ImageUtils imageUtils;
 	private WindowManager windowManager;
+	private Random random;
 	
 	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
 		windowManager = wm;
+		random = new Random(System.currentTimeMillis());
 	}
 	
 	public void playGame() throws AWTException {
@@ -82,7 +85,7 @@ public class Playa {
 				SquareType st = board[x][y];
 				if (st != SquareType.BLANK) {
 					for (Direction d : Direction.values()) {
-						if (d == Direction.DOWN) {
+						if (d == Direction.RIGHT) {
 							break;
 						}
 						SquareType neighbor = getNextSquareType(board, x, y, d);
@@ -99,6 +102,10 @@ public class Playa {
 		
 		if (bestCollision == SquareType.BLANK)
 			return null;
+		
+		if (bestDirection == Direction.LEFT) {
+			bestDirection = random.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		}
 		
 		return bestDirection;
 	}
