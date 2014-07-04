@@ -19,6 +19,7 @@ package com.mebigfatguy.twenty48playa;
 import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,15 @@ public class Playa {
 			if (cd != null) {
 				collide(cd);
 			} else {
-				collide(Direction.UP);
+				for (Direction d : Direction.values()) {
+					collide(d);
+					SquareType[][] after = imageUtils.getBoardState();
+					if (!Arrays.deepEquals(board, after))
+						break;
+				}
 			}
+			
+
 			
 		} while (!done);
 	}
