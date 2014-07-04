@@ -40,7 +40,8 @@ public class ImageUtils {
 	
 	private Robot robot;
 	private File debugDir;
-	private Rectangle boardDimensions;
+	private Rectangle boardCoordinates;
+	private Rectangle[][] squareCoordinates;
 	
 	public ImageUtils() throws AWTException {
 		robot = new Robot();
@@ -49,18 +50,15 @@ public class ImageUtils {
 	}
 	
 	public void initialize() throws AWTException {
-		boardDimensions = findBoardCoordinates();
+		findBoardCoordinates();
 	}
 	
 	public int[][] getBoardState() throws AWTException {
 		int[][] state = new int[4][4];
-		BufferedImage image = getScreenBuffer(boardDimensions);
-		int width = image.getWidth() / 4;
-		int height = image.getHeight() / 4;
+		BufferedImage image = getScreenBuffer(boardCoordinates);
 		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 4; x++) {
-				Rectangle squareDim = new Rectangle(x * width, y * height, width, height);
-				BufferedImage square = getImageBuffer(image, squareDim);
+			for (int x = 0; x < 4; x++) {	
+				BufferedImage square = getImageBuffer(image, squareCoordinates[x][y]);
 				writeImage(square, "(" + x + "," + y + ")");
 			}
 		}
@@ -132,7 +130,7 @@ public class ImageUtils {
 		return null;
 	}
 	
-	public Rectangle findBoardCoordinates() throws AWTException {
+	private void findBoardCoordinates() throws AWTException {
 		BufferedImage image = getScreenBuffer();
 		writeImage(image, "screen.png");
 		
@@ -142,11 +140,34 @@ public class ImageUtils {
 		int top = findColor(image, left + 4, center.y, 0, -1, ColorTable.OUTSIDE.ordinal()).y + 1;
 		int bottom = findColor(image, left + 4, center.y, 0, 1, ColorTable.OUTSIDE.ordinal()).y - 1;
 		
-		Rectangle bounds = new Rectangle(left, top, right - left, bottom - top);
-		writeImage(getImageBuffer(image, bounds), "board.png");
-		return bounds;
+		boardCoordinates = new Rectangle(left, top, right - left, bottom - top);
+		image = getImageBuffer(image, boardCoordinates);
+		writeImage(image, "board.png");
+		
+		squareCoordinates = new Rectangle[4][4];
+		
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				squareCoordinates[x][y] = findSquareCoordinates(image, x, y);
+			}
+		}
 	}
 	
+
+	private Rectangle findSquareCoordinates(BufferedImage image, int x, int y) {
+		
+		int startX = ((x * 4 + 1) * image.getWidth()) / 16;
+		int startY = ((y * 4 + 1) * image.getHeight()) / 16;
+		int left = findColor(image, startX, startY, -1, 0, ColorTable.EDGE.ordinal()).x + 1;
+		int top = findColor(image, startX, startY, 0, -1, ColorTable.EDGE.ordinal()).y + 1;
+		
+		startX = ((x * 4 + 3) * image.getWidth()) / 16;
+		startY = ((y * 4 + 3) * image.getHeight()) / 16;
+		int right = findColor(image, startX, startY, 1, 0, ColorTable.EDGE.ordinal()).x - 1;
+		int bottom = findColor(image, startX, startY, 0, 1, ColorTable.EDGE.ordinal()).y - 1;
+		
+		return new Rectangle(left, top, right - left, bottom - top);
+	}
 
 	private Point findColor(BufferedImage image, int startX, int startY, int dirX, int dirY, int colorIndex) {
 		
@@ -158,7 +179,7 @@ public class ImageUtils {
 		do {
 			r.getPixel(curX, curY, pixel);
 			if (pixel[0] == colorIndex) {
-				return new Point(curX, curY);
+					return new Point(curX, curY);
 			}
 			curX += dirX;
 			curY += dirY;
