@@ -17,6 +17,8 @@
 package com.mebigfatguy.twenty48playa;
 
 import java.awt.AWTException;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +27,13 @@ public class Playa {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
 	
-	private ImageUtils imageUtils;
 	
-	public Playa(ImageUtils iu) {
+	private ImageUtils imageUtils;
+	private WindowManager windowManager;
+	
+	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
+		windowManager = wm;
 	}
 	
 	public void playGame() throws AWTException {
@@ -36,7 +41,77 @@ public class Playa {
 		boolean done = false;
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
+			Direction cd = getBestCollisionDirection(board);
+			
+			if (cd != null) {
+				collide(cd);
+			} else {
+				collide(Direction.UP);
+			}
+			
 		} while (!done);
+	}
+
+	public Direction getBestCollisionDirection(SquareType[][] board) {
+		SquareType bestCollision = SquareType.BLANK;
+		Direction bestDirection = Direction.NONE;
 		
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				SquareType st = board[x][y];
+				if (st != SquareType.BLANK) {
+					for (Direction d : Direction.values()) {
+						if (d == Direction.DOWN) {
+							break;
+						}
+						SquareType neighbor = getNextSquareType(board, x, y, d);
+						if (st == neighbor) {
+							if (st.ordinal() > bestCollision.ordinal()) {
+								bestCollision = st;
+								bestDirection = d;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (bestCollision == SquareType.BLANK)
+			return null;
+		
+		return bestDirection;
+	}
+	
+	private SquareType getNextSquareType(SquareType[][] board, int x, int y, Direction d) {
+		Point move = d.getMovement();
+		
+		x+= move.x;
+		y+= move.y;
+		
+		while ((x >= 0) && (x <= 3) && (y >= 0) && (y <= 3)) {
+			SquareType st = board[x][y];
+			if (st != SquareType.BLANK)
+				return st;
+			x+= move.x;
+			y+= move.y;
+		}
+		
+		return SquareType.BLANK;
+	}
+
+	private void collide(Direction d) {
+		switch (d) {
+			case UP:
+				windowManager.key(KeyEvent.VK_UP);
+			break;
+			
+			case LEFT:
+				windowManager.key(KeyEvent.VK_LEFT);
+			break;
+				
+			case RIGHT:
+				windowManager.key(KeyEvent.VK_RIGHT);
+			break;
+		}	
 	}
 }

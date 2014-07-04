@@ -28,7 +28,7 @@ public class Twenty48Playa {
 			ImageUtils iu = new ImageUtils();
 			WindowManager wm = new WindowManager(iu);
 			wm.launch2048();
-			Playa playa = new Playa(iu);
+			Playa playa = new Playa(iu, wm);
 			
 			while (true) {
 				playa.playGame();

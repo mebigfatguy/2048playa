@@ -71,4 +71,12 @@ public class WindowManager {
 		click(pt);
 		click(pt);
 	}
+
+	public void key(int keycode) {
+		robot.keyPress(keycode);
+		robot.delay(10);
+		robot.keyRelease(keycode);
+		robot.delay(2000);
+		
+	}
 }
