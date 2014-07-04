@@ -39,19 +39,6 @@ public class ImageUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUtils.class);
 	
-	private static IndexColorModel COLOR_MODEL;
-	private static final int NUMBER_INDEX = 0;
-	private static final int EDGE_INDEX = 1;
-	private static final int OUTSIDE_INDEX = 2;
-	
-	static {
-		byte[] r = { 119, (byte)187, (byte)238, 0, -1,  0,  0, -1, -1,  0, -1};
-		byte[] g = { 110, (byte)173, (byte)228, 0,  0, -1,  0, -1,  0, -1, -1};
-		byte[] b = { 101, (byte)160, (byte)218, 0,  0,  0, -1,  0, -1, -1, -1};
-		
-		COLOR_MODEL = new IndexColorModel(8, 11, r, g, b);
-	}
-	
 	private Robot robot;
 	private File debugDir;
 	private Rectangle boardDimensions;
@@ -94,7 +81,7 @@ public class ImageUtils {
 	}
 	
 	public BufferedImage getImageBuffer(BufferedImage srcImage, Rectangle bounds) throws AWTException {
-		BufferedImage dstImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_BYTE_INDEXED, COLOR_MODEL);
+		BufferedImage dstImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_BYTE_INDEXED, ColorTable.getColorModel());
 		Graphics graphix = dstImage.getGraphics();
 		try {
 			graphix.drawImage(srcImage, -bounds.x, -bounds.y, null);
@@ -107,7 +94,7 @@ public class ImageUtils {
 	
 	public BufferedImage to8Bit(BufferedImage srcImage) {
 		
-		BufferedImage dstImage = new BufferedImage(srcImage.getWidth(), srcImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, COLOR_MODEL);
+		BufferedImage dstImage = new BufferedImage(srcImage.getWidth(), srcImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, ColorTable.getColorModel());
 		Graphics graphix = dstImage.getGraphics();
 		try {
 			graphix.drawImage(srcImage, 0, 0, null);
@@ -151,10 +138,10 @@ public class ImageUtils {
 		writeImage(image, "screen.png");
 		
 		Point center = new Point(image.getWidth() / 2, image.getHeight() / 2);
-		int left = findColor(image, 30, center.y, 1, 0, EDGE_INDEX).x;
-		int right = findColor(image, image.getWidth() - 30, center.y, -1, 0, EDGE_INDEX).x;
-		int top = findColor(image, left + 4, center.y, 0, -1, OUTSIDE_INDEX).y + 1;
-		int bottom = findColor(image, left + 4, center.y, 0, 1, OUTSIDE_INDEX).y - 1;
+		int left = findColor(image, 30, center.y, 1, 0, ColorTable.EDGE.ordinal()).x;
+		int right = findColor(image, image.getWidth() - 30, center.y, -1, 0, ColorTable.EDGE.ordinal()).x;
+		int top = findColor(image, left + 4, center.y, 0, -1, ColorTable.OUTSIDE.ordinal()).y + 1;
+		int bottom = findColor(image, left + 4, center.y, 0, 1, ColorTable.OUTSIDE.ordinal()).y - 1;
 		
 		Rectangle bounds = new Rectangle(left, top, right - left, bottom - top);
 		writeImage(getImageBuffer(image, bounds), "board.png");
