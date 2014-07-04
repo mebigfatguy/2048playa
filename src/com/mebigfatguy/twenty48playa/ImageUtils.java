@@ -59,7 +59,6 @@ public class ImageUtils {
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {	
 				BufferedImage square = getImageBuffer(image, squareCoordinates[x][y]);
-				writeImage(square, "(" + x + "," + y + ")");
 				state[x][y] = getMajorColor(square);
 			}
 		}
@@ -133,7 +132,6 @@ public class ImageUtils {
 	
 	private void findBoardCoordinates() throws AWTException {
 		BufferedImage image = getScreenBuffer();
-		writeImage(image, "screen.png");
 		
 		Point center = new Point(image.getWidth() / 2, image.getHeight() / 2);
 		int left = findColor(image, 30, center.y, 1, 0, SquareType.EDGE.ordinal()).x;
@@ -143,7 +141,6 @@ public class ImageUtils {
 		
 		boardCoordinates = new Rectangle(left, top, right - left, bottom - top);
 		image = getImageBuffer(image, boardCoordinates);
-		writeImage(image, "board.png");
 		
 		squareCoordinates = new Rectangle[4][4];
 		
