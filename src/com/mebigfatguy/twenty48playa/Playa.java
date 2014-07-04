@@ -35,7 +35,7 @@ public class Playa {
 		
 		boolean done = false;
 		do {
-			int[][] board = imageUtils.getBoardState();
+			SquareType[][] board = imageUtils.getBoardState();
 		} while (!done);
 		
 	}

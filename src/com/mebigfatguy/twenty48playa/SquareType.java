@@ -25,7 +25,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public enum ColorTable {
+public enum SquareType {
 
 	OUTSIDE,
 	EDGE,
@@ -46,23 +46,23 @@ public enum ColorTable {
 	TWENTYFOURTYEIGHT,
 	FOURTYNINETYSIX;
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(ColorTable.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(SquareType.class);
 	
 	private static IndexColorModel COLOR_MODEL;
 	
 	static {
-		int numColors = ColorTable.values().length;
+		int numColors = SquareType.values().length;
 		
 		byte[] r = new byte[numColors];
 		byte[] g = new byte[numColors];
 		byte[] b = new byte[numColors];
 
-		try (BufferedInputStream bis = new BufferedInputStream(ColorTable.class.getResourceAsStream("/com/mebigfatguy/twenty48playa/colortable.properties"))) {
+		try (BufferedInputStream bis = new BufferedInputStream(SquareType.class.getResourceAsStream("/com/mebigfatguy/twenty48playa/colortable.properties"))) {
 			
 			Properties p = new Properties();
 			p.load(bis);
 			int index = 0;
-			for (ColorTable ct : ColorTable.values()) {
+			for (SquareType ct : SquareType.values()) {
 				String clr = p.getProperty(ct.name());
 				Color color = Color.decode(clr);
 				r[index] = (byte) color.getRed();

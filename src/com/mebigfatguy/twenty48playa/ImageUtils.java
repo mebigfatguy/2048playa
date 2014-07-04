@@ -53,13 +53,14 @@ public class ImageUtils {
 		findBoardCoordinates();
 	}
 	
-	public int[][] getBoardState() throws AWTException {
-		int[][] state = new int[4][4];
+	public SquareType[][] getBoardState() throws AWTException {
+		SquareType[][] state = new SquareType[4][4];
 		BufferedImage image = getScreenBuffer(boardCoordinates);
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {	
 				BufferedImage square = getImageBuffer(image, squareCoordinates[x][y]);
 				writeImage(square, "(" + x + "," + y + ")");
+				state[x][y] = getMajorColor(square);
 			}
 		}
 		
@@ -78,7 +79,7 @@ public class ImageUtils {
 	}
 	
 	public BufferedImage getImageBuffer(BufferedImage srcImage, Rectangle bounds) throws AWTException {
-		BufferedImage dstImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_BYTE_INDEXED, ColorTable.getColorModel());
+		BufferedImage dstImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_BYTE_INDEXED, SquareType.getColorModel());
 		Graphics graphix = dstImage.getGraphics();
 		try {
 			graphix.drawImage(srcImage, -bounds.x, -bounds.y, null);
@@ -91,7 +92,7 @@ public class ImageUtils {
 	
 	public BufferedImage to8Bit(BufferedImage srcImage) {
 		
-		BufferedImage dstImage = new BufferedImage(srcImage.getWidth(), srcImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, ColorTable.getColorModel());
+		BufferedImage dstImage = new BufferedImage(srcImage.getWidth(), srcImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, SquareType.getColorModel());
 		Graphics graphix = dstImage.getGraphics();
 		try {
 			graphix.drawImage(srcImage, 0, 0, null);
@@ -135,10 +136,10 @@ public class ImageUtils {
 		writeImage(image, "screen.png");
 		
 		Point center = new Point(image.getWidth() / 2, image.getHeight() / 2);
-		int left = findColor(image, 30, center.y, 1, 0, ColorTable.EDGE.ordinal()).x;
-		int right = findColor(image, image.getWidth() - 30, center.y, -1, 0, ColorTable.EDGE.ordinal()).x;
-		int top = findColor(image, left + 4, center.y, 0, -1, ColorTable.OUTSIDE.ordinal()).y + 1;
-		int bottom = findColor(image, left + 4, center.y, 0, 1, ColorTable.OUTSIDE.ordinal()).y - 1;
+		int left = findColor(image, 30, center.y, 1, 0, SquareType.EDGE.ordinal()).x;
+		int right = findColor(image, image.getWidth() - 30, center.y, -1, 0, SquareType.EDGE.ordinal()).x;
+		int top = findColor(image, left + 4, center.y, 0, -1, SquareType.OUTSIDE.ordinal()).y + 1;
+		int bottom = findColor(image, left + 4, center.y, 0, 1, SquareType.OUTSIDE.ordinal()).y - 1;
 		
 		boardCoordinates = new Rectangle(left, top, right - left, bottom - top);
 		image = getImageBuffer(image, boardCoordinates);
@@ -158,13 +159,13 @@ public class ImageUtils {
 		
 		int startX = ((x * 4 + 1) * image.getWidth()) / 16;
 		int startY = ((y * 4 + 1) * image.getHeight()) / 16;
-		int left = findColor(image, startX, startY, -1, 0, ColorTable.EDGE.ordinal()).x + 1;
-		int top = findColor(image, startX, startY, 0, -1, ColorTable.EDGE.ordinal()).y + 1;
+		int left = findColor(image, startX, startY, -1, 0, SquareType.EDGE.ordinal()).x + 1;
+		int top = findColor(image, startX, startY, 0, -1, SquareType.EDGE.ordinal()).y + 1;
 		
 		startX = ((x * 4 + 3) * image.getWidth()) / 16;
 		startY = ((y * 4 + 3) * image.getHeight()) / 16;
-		int right = findColor(image, startX, startY, 1, 0, ColorTable.EDGE.ordinal()).x - 1;
-		int bottom = findColor(image, startX, startY, 0, 1, ColorTable.EDGE.ordinal()).y - 1;
+		int right = findColor(image, startX, startY, 1, 0, SquareType.EDGE.ordinal()).x - 1;
+		int bottom = findColor(image, startX, startY, 0, 1, SquareType.EDGE.ordinal()).y - 1;
 		
 		return new Rectangle(left, top, right - left, bottom - top);
 	}
@@ -184,6 +185,34 @@ public class ImageUtils {
 			curX += dirX;
 			curY += dirY;
 		} while (true);
+	}
+	
+	private SquareType getMajorColor(BufferedImage image) {
+		int[] counts = new int[SquareType.values().length];
+		
+		Raster r = image.getRaster();
+		int width = image.getWidth();
+		int height = image.getHeight();
+		int[] pixels = new int[width];
+		
+		for (int y = 0; y < height; y++) {
+			r.getPixels(0,  y,  width,  1,  pixels);
+			for (int i = 0; i < pixels.length; i++) {
+				counts[pixels[i]]++;
+			}
+		}
+		
+		int max = 0;
+		int maxIndex = 0;
+		
+		for (int i = 0; i < counts.length; i++) {
+			if (counts[i] > max) {
+				max = counts[i];
+				maxIndex = i;
+			}
+		}
+		
+		return SquareType.values()[maxIndex];
 	}
 
 	public void writeImage(BufferedImage image, String fileName) {
