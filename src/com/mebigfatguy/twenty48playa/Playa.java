@@ -42,11 +42,15 @@ public class Playa {
 		boolean done = false;
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
+			
 			Direction cd = getBestCollisionDirection(board);
 			
 			if (cd != null) {
 				collide(cd);
 			} else {
+				if (finished(board))
+					return;
+				
 				for (Direction d : Direction.values()) {
 					collide(d);
 					SquareType[][] after = imageUtils.getBoardState();
@@ -55,9 +59,18 @@ public class Playa {
 				}
 			}
 			
-
 			
 		} while (!done);
+	}
+
+	private boolean finished(SquareType[][] board) {
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				if (board[x][y] == SquareType.BLANK)
+					return false;
+			}
+		}
+		return true;
 	}
 
 	public Direction getBestCollisionDirection(SquareType[][] board) {
