@@ -19,7 +19,6 @@ package com.mebigfatguy.twenty48playa;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;

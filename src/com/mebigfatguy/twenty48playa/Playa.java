@@ -17,7 +17,6 @@
 package com.mebigfatguy.twenty48playa;
 
 import java.awt.AWTException;
-import java.awt.Rectangle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
