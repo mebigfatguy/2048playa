@@ -22,7 +22,11 @@ public class OptionComparator implements Comparator<Pair<Integer, Direction>> {
 
 	@Override
 	public int compare(Pair<Integer, Direction> option1, Pair<Integer, Direction> option2) {
-		return -(option1.getKey().intValue() - option2.getKey().intValue());
+		int result = -(option1.getKey().intValue() - option2.getKey().intValue());
+		if (result != 0)
+			return result;
+		
+		return option1.getValue().ordinal() - option2.getValue().ordinal();
 	}
 
 }

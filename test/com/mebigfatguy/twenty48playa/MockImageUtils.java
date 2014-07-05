@@ -16,42 +16,35 @@
  */
 package com.mebigfatguy.twenty48playa;
 
-public class Pair<K, V> {
+import java.awt.AWTException;
 
-	private K key;
-	private V value;
+public class MockImageUtils extends ImageUtils {
+
+	SquareType[][] board = new SquareType[4][4];
 	
-	public Pair(K k, V v) {
-		key = k;
-		value = v;
+	public MockImageUtils() throws AWTException {
+		super();
 	}
-	
-	public K getKey() {
-		return key;
-	}
-	
-	public V getValue() {
-		return value;
-	}
-	
-	@Override
-	public int hashCode() {
-		return key.hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Pair)) 
-			return false;
+
+	public void setBoardState(String boardState) {
 		
-		@SuppressWarnings("unchecked")
-		Pair<K, V> that = (Pair<K, V>) o;
+		String[] numbers = boardState.trim().split("\\s+");
+		if (numbers.length != 16) {
+			throw new RuntimeException("Invalid number of board positions: " + numbers.length);
+		}
 		
-		return (key.equals(that.key));
+		int i = 0;
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				board[x][y] = SquareType.valueOf(SquareType.class, numbers[i++]);
+			}
+		}
 	}
 	
 	@Override
-	public String toString() {
-		return "Pair[" + key + ", " + value + "]";
+	public SquareType[][] getBoardState() {
+		return board;
 	}
+
+	
 }

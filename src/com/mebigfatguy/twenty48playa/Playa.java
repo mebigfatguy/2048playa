@@ -87,16 +87,6 @@ public class Playa {
 		} while (!done);
 	}
 
-	private boolean finished(SquareType[][] board) {
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 4; x++) {
-				if (board[x][y] == SquareType.BLANK)
-					return false;
-			}
-		}
-		return true;
-	}
-
 	public Direction getBestCollisionDirection(SquareType[][] board) {
 		SquareType bestCollision = SquareType.BLANK;
 		Direction bestDirection = Direction.NONE;
@@ -143,7 +133,17 @@ public class Playa {
 		return bestDirection;
 	}
 	
-	private int verticalScore(SquareType[][] board) {
+	private boolean finished(SquareType[][] board) {
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				if (board[x][y] == SquareType.BLANK)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	int verticalScore(SquareType[][] board) {
 		int score = 0;
 		
 		for (int y = 0; y < 3; y++) {
@@ -190,19 +190,32 @@ public class Playa {
 		}	
 	}
 	
-	private SquareType[][] simulateUp(SquareType[][] board) {
+	SquareType[][] simulateUp(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		
 		for (int x = 0; x < 4; x++) {
-			if (!fullColumn(simBoard, x)) {
-				for (int y = 0; y < 3; y++) {
-					SquareType yType = simBoard[x][y];
-					for (int srcY = y + 1; srcY < 4; srcY++) {
-						SquareType srcYType = simBoard[x][srcY];
-						if (yType == SquareType.BLANK) {
-							if (srcYType != SquareType.BLANK) {
-								simBoard[x][y] = srcYType;
+			for (int y = 0; y < 3; y++) {
+				SquareType yType = simBoard[x][y];
+				for (int srcY = y + 1; srcY < 4; srcY++) {
+					SquareType srcYType = simBoard[x][srcY];
+					if (yType == SquareType.BLANK) {
+						if (srcYType != SquareType.BLANK) {
+							simBoard[x][y] = srcYType;
+							yType = srcYType;
+							int tY = srcY + 1;
+							for (int copyY = y + 1; copyY < 4; copyY++) {
+								if (tY < 4) {
+									simBoard[x][copyY] = simBoard[x][tY++];
+								} else 
+									simBoard[x][copyY] = SquareType.BLANK;
+							}
+							srcY--;
+						}
+					} else {
+						if (srcYType != SquareType.BLANK) {
+							if (srcYType == yType) {
+								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
 								srcY++;
 								for (int copyY = y + 1; copyY < 4; copyY++) {
 									if (srcY < 4) {
@@ -211,20 +224,7 @@ public class Playa {
 										simBoard[x][copyY] = SquareType.BLANK;
 								}
 							}
-						} else {
-							if (srcYType != SquareType.BLANK) {
-								if (srcYType == yType) {
-									simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
-									srcY++;
-									for (int copyY = y + 1; copyY < 4; copyY++) {
-										if (srcY < 4) {
-											simBoard[x][copyY] = simBoard[x][srcY++];
-										} else 
-											simBoard[x][copyY] = SquareType.BLANK;
-									}
-								}
-								break;
-							}
+							break;
 						}
 					}
 				}
@@ -234,19 +234,32 @@ public class Playa {
 		return simBoard;
 	}
 
-	private SquareType[][] simulateLeft(SquareType[][] board) {
+	SquareType[][] simulateLeft(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		
 		for (int y = 0; y < 4; y++) {
-			if (!fullRow(simBoard, y)) {
-				for (int x = 0; x < 3; x++) {
-					SquareType xType = simBoard[x][y];
-					for (int srcX = x + 1; srcX < 4; srcX++) {
-						SquareType srcXType = simBoard[srcX][y];
-						if (xType == SquareType.BLANK) {
-							if (srcXType != SquareType.BLANK) {
-								simBoard[x][y] = srcXType;
+			for (int x = 0; x < 3; x++) {
+				SquareType xType = simBoard[x][y];
+				for (int srcX = x + 1; srcX < 4; srcX++) {
+					SquareType srcXType = simBoard[srcX][y];
+					if (xType == SquareType.BLANK) {
+						if (srcXType != SquareType.BLANK) {
+							simBoard[x][y] = srcXType;
+							xType = srcXType;
+							int tX = srcX + 1;
+							for (int copyX = x + 1; copyX < 4; copyX++) {
+								if (tX < 4) {
+									simBoard[copyX][y] = simBoard[tX++][y];
+								} else 
+									simBoard[copyX][y] = SquareType.BLANK;
+							}
+							srcX--;
+						}
+					} else {
+						if (srcXType != SquareType.BLANK) {
+							if (srcXType == xType) {
+								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
 								srcX++;
 								for (int copyX = x + 1; copyX < 4; copyX++) {
 									if (srcX < 4) {
@@ -255,20 +268,7 @@ public class Playa {
 										simBoard[copyX][y] = SquareType.BLANK;
 								}
 							}
-						} else {
-							if (srcXType != SquareType.BLANK) {
-								if (srcXType == xType) {
-									simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
-									srcX++;
-									for (int copyX = x + 1; copyX < 4; copyX++) {
-										if (srcX < 4) {
-											simBoard[copyX][y] = simBoard[srcX++][y];
-										} else 
-											simBoard[copyX][y] = SquareType.BLANK;
-									}
-								}
-								break;
-							}
+							break;
 						}
 					}
 				}
@@ -278,19 +278,32 @@ public class Playa {
 		return simBoard;
 	}
 
-	private SquareType[][] simulateRight(SquareType[][] board) {
+	SquareType[][] simulateRight(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		
 		for (int y = 0; y < 4; y++) {
-			if (!fullRow(simBoard, y)) {
-				for (int x = 3; x > 0; x--) {
-					SquareType xType = simBoard[x][y];
-					for (int srcX = x - 1; srcX >= 0; srcX--) {
-						SquareType srcXType = simBoard[srcX][y];
-						if (xType == SquareType.BLANK) {
-							if (srcXType != SquareType.BLANK) {
-								simBoard[x][y] = srcXType;
+			for (int x = 3; x > 0; x--) {
+				SquareType xType = simBoard[x][y];
+				for (int srcX = x - 1; srcX >= 0; srcX--) {
+					SquareType srcXType = simBoard[srcX][y];
+					if (xType == SquareType.BLANK) {
+						if (srcXType != SquareType.BLANK) {
+							simBoard[x][y] = srcXType;
+							xType = srcXType;
+							int tx = srcX - 1;
+							for (int copyX = x - 1; copyX >= 0; copyX--) {
+								if (tx >= 0) {
+									simBoard[copyX][y] = simBoard[tx--][y];
+								} else 
+									simBoard[copyX][y] = SquareType.BLANK;
+							}
+							srcX++;
+						}
+					} else {
+						if (srcXType != SquareType.BLANK) {
+							if (srcXType == xType) {
+								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
 								srcX--;
 								for (int copyX = x - 1; copyX >= 0; copyX--) {
 									if (srcX >= 0) {
@@ -299,20 +312,7 @@ public class Playa {
 										simBoard[copyX][y] = SquareType.BLANK;
 								}
 							}
-						} else {
-							if (srcXType != SquareType.BLANK) {
-								if (srcXType == xType) {
-									simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
-									srcX--;
-									for (int copyX = x - 1; copyX >= 0; copyX--) {
-										if (srcX >= 0) {
-											simBoard[copyX][y] = simBoard[srcX--][y];
-										} else 
-											simBoard[copyX][y] = SquareType.BLANK;
-									}
-								}
-								break;
-							}
+							break;
 						}
 					}
 				}
@@ -320,26 +320,6 @@ public class Playa {
 		}
 		
 		return simBoard;
-	}
-	
-	private boolean fullRow(SquareType[][] board, int y) {
-		for (int x = 0; x < 4; x++) {
-			if (board[x][y] == SquareType.BLANK) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	private boolean fullColumn(SquareType[][] board, int x) {
-		for (int y = 0; y < 4; y++) {
-			if (board[x][y] == SquareType.BLANK) {
-				return false;
-			}
-		}
-		
-		return true;
 	}
 	
 	private void copyBoard(SquareType[][] srcBoard, SquareType[][] dstBoard) {
