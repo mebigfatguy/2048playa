@@ -190,6 +190,10 @@ public class Playa {
 			case RIGHT:
 				windowManager.key(KeyEvent.VK_RIGHT);
 			break;
+			
+			case DOWN:
+				windowManager.key(KeyEvent.VK_DOWN);
+			break;
 		}	
 	}
 	

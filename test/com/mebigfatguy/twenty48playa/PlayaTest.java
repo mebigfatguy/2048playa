@@ -68,4 +68,20 @@ public class PlayaTest {
 		Assert.assertEquals(SquareType.FOUR, newBoard[2][3]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[3][3]);
 	}
+	
+	@Test
+	public void testNeedDown() {
+		
+		iu.setBoardState(
+				" TWO FOUR TWO FOUR " +
+				" FOUR TWO FOUR TWO " +
+				" TWO FOUR TWO FOUR " +
+				" BLANK BLANK BLANK BLANK "
+			);
+			
+			SquareType[][] origBoard = iu.getBoardState();
+			
+			Assert.assertEquals(Direction.DOWN, playa.getBestNonCollisionDirection(origBoard));
+		
+	}
 }
