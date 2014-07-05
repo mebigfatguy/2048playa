@@ -19,7 +19,11 @@ package com.mebigfatguy.twenty48playa;
 import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -28,6 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Playa {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
+	private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
 	
 	
 	private ImageUtils imageUtils;
@@ -54,12 +59,29 @@ public class Playa {
 				if (finished(board))
 					return;
 				
-				for (Direction d : Direction.values()) {
-					collide(d);
-					SquareType[][] after = imageUtils.getBoardState();
-					if (!Arrays.deepEquals(board, after))
-						break;
+				List<Pair<Integer, Direction>> options = new ArrayList<>();
+
+//				SquareType[][] upSim = simulateUp(board);
+//				if (!Arrays.deepEquals(upSim,  board)) {
+//					options.add(new Pair(verticalScore(upSim), Direction.UP));
+//				}
+				
+				SquareType[][] leftSim = simulateLeft(board);
+				if (!Arrays.deepEquals(leftSim,  board)) {
+					options.add(new Pair(verticalScore(leftSim), Direction.LEFT));
 				}
+				
+				SquareType[][] rightSim = simulateRight(board);
+				if (!Arrays.deepEquals(rightSim,  board)) {
+					options.add(new Pair(verticalScore(rightSim), Direction.RIGHT));
+				}
+				
+				if (options.size() == 0) {
+					collide(Direction.DOWN);
+				} else {
+					Collections.sort(options, OPTION_COMPARATOR);
+					collide(options.get(0).getValue());
+				}				
 			}
 			
 			
@@ -104,12 +126,38 @@ public class Playa {
 			return null;
 		
 		if (bestDirection == Direction.LEFT) {
+			SquareType[][] leftSim = simulateLeft(board);
+			SquareType[][] rightSim = simulateRight(board);
+			
+			int leftScore = verticalScore(leftSim);
+			int rightScore = verticalScore(rightSim);
+			
+			if (leftScore > rightScore) {
+				return Direction.LEFT;
+			} else if (leftScore < rightScore) {
+				return Direction.RIGHT;
+			}
+			
 			bestDirection = random.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		}
 		
 		return bestDirection;
 	}
 	
+	private int verticalScore(SquareType[][] board) {
+		int score = 0;
+		
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 4; x++) {
+				if ((board[x][y] == board[x][y+1]) && (board[x][y] != SquareType.BLANK)) {
+					score += Math.pow(2, board[x][y].ordinal() - SquareType.TWO.ordinal() + 1);
+				}
+			}
+		}
+		
+		return score;
+	}
+
 	private SquareType getNextSquareType(SquareType[][] board, int x, int y, Direction d) {
 		Point move = d.getMovement();
 		
@@ -141,5 +189,112 @@ public class Playa {
 				windowManager.key(KeyEvent.VK_RIGHT);
 			break;
 		}	
+	}
+	
+	private SquareType[][] simulateLeft(SquareType[][] board) {
+		SquareType[][] simBoard = new SquareType[4][4];
+		copyBoard(board, simBoard);
+		
+		for (int y = 0; y < 4; y++) {
+			if (!fullRow(simBoard, y)) {
+				for (int x = 0; x < 3; x++) {
+					SquareType xType = simBoard[x][y];
+					for (int srcX = x + 1; srcX < 4; srcX++) {
+						SquareType srcXType = simBoard[srcX][y];
+						if (xType == SquareType.BLANK) {
+							if (srcXType != SquareType.BLANK) {
+								simBoard[x][y] = srcXType;
+								srcX++;
+								for (int copyX = x + 1; copyX < 4; copyX++) {
+									if (srcX < 4) {
+										simBoard[copyX][y] = simBoard[srcX++][y];
+									} else 
+										simBoard[copyX][y] = SquareType.BLANK;
+								}
+							}
+						} else {
+							if (srcXType != SquareType.BLANK) {
+								if (srcXType == xType) {
+									simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
+									srcX++;
+									for (int copyX = x + 1; copyX < 4; copyX++) {
+										if (srcX < 4) {
+											simBoard[copyX][y] = simBoard[srcX++][y];
+										} else 
+											simBoard[copyX][y] = SquareType.BLANK;
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return simBoard;
+	}
+	
+
+
+	private SquareType[][] simulateRight(SquareType[][] board) {
+		SquareType[][] simBoard = new SquareType[4][4];
+		copyBoard(board, simBoard);
+		
+		for (int y = 0; y < 4; y++) {
+			if (!fullRow(simBoard, y)) {
+				for (int x = 3; x > 0; x--) {
+					SquareType xType = simBoard[x][y];
+					for (int srcX = x - 1; srcX >= 0; srcX--) {
+						SquareType srcXType = simBoard[srcX][y];
+						if (xType == SquareType.BLANK) {
+							if (srcXType != SquareType.BLANK) {
+								simBoard[x][y] = srcXType;
+								srcX--;
+								for (int copyX = x - 1; copyX >= 0; copyX--) {
+									if (srcX >= 0) {
+										simBoard[copyX][y] = simBoard[srcX--][y];
+									} else 
+										simBoard[copyX][y] = SquareType.BLANK;
+								}
+							}
+						} else {
+							if (srcXType != SquareType.BLANK) {
+								if (srcXType == xType) {
+									simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
+									srcX--;
+									for (int copyX = x - 1; copyX >= 0; copyX--) {
+										if (srcX >= 0) {
+											simBoard[copyX][y] = simBoard[srcX--][y];
+										} else 
+											simBoard[copyX][y] = SquareType.BLANK;
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return simBoard;
+	}
+	
+	private boolean fullRow(SquareType[][] board, int y) {
+		for (int x = 0; x < 4; x++) {
+			if (board[x][y] == SquareType.BLANK) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	private void copyBoard(SquareType[][] srcBoard, SquareType[][] dstBoard) {
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				dstBoard[x][y] = srcBoard[x][y];
+			}
+		}
 	}
 }
