@@ -37,6 +37,7 @@ public class Playa {
 	private ImageUtils imageUtils;
 	private WindowManager windowManager;
 	private Random random;
+	private SquareType[][] oldBoard;
 	
 	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
@@ -46,6 +47,7 @@ public class Playa {
 	
 	public void playGame() throws AWTException {
 		
+		oldBoard = new SquareType[4][4];
 		boolean done = false;
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
@@ -55,11 +57,12 @@ public class Playa {
 			if (cd != null) {
 				collide(cd);
 			} else {
-				if (finished(board))
-					return;
 				
 				collide(getBestNonCollisionDirection(board));			
 			}
+			
+			if (finished(board))
+				return;
 			
 		} while (!done);
 	}
@@ -137,13 +140,11 @@ public class Playa {
 	}
 	
 	private boolean finished(SquareType[][] board) {
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 4; x++) {
-				if (board[x][y] == SquareType.BLANK)
-					return false;
-			}
-		}
-		return true;
+
+		boolean finished = Arrays.deepEquals(oldBoard, board);
+		
+		copyBoard(board, oldBoard);
+		return finished;
 	}
 	
 	int verticalScore(SquareType[][] board) {
