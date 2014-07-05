@@ -67,6 +67,5 @@ public class PlayaTest {
 		Assert.assertEquals(SquareType.FOUR, newBoard[1][3]);
 		Assert.assertEquals(SquareType.FOUR, newBoard[2][3]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[3][3]);
-
 	}
 }

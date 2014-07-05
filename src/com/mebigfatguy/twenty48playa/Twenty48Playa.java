@@ -16,6 +16,8 @@
  */
 package com.mebigfatguy.twenty48playa;
 
+import javax.swing.JOptionPane;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +29,17 @@ public class Twenty48Playa {
 		try {
 			ImageUtils iu = new ImageUtils();
 			WindowManager wm = new WindowManager(iu);
-			wm.launch2048();
-			Playa playa = new Playa(iu, wm);
 			
-			while (true) {
+			int choice = JOptionPane.CANCEL_OPTION;
+			do {
+				wm.launch2048();
+				Playa playa = new Playa(iu, wm);
+				
 				playa.playGame();
-			}
+				
+				choice = JOptionPane.showConfirmDialog(null, "Try again?");
+			} while (choice == JOptionPane.OK_OPTION);
+				
 		} catch (Exception e) {
 			LOGGER.error("Failed launching browser to 2048", e);
 		}

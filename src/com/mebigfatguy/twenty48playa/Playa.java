@@ -58,33 +58,36 @@ public class Playa {
 				if (finished(board))
 					return;
 				
-				List<Pair<Integer, Direction>> options = new ArrayList<>();
-
-				SquareType[][] upSim = simulateUp(board);
-				if (!Arrays.deepEquals(upSim,  board)) {
-					options.add(new Pair(verticalScore(upSim), Direction.UP));
-				}
-				
-				SquareType[][] leftSim = simulateLeft(board);
-				if (!Arrays.deepEquals(leftSim,  board)) {
-					options.add(new Pair(verticalScore(leftSim), Direction.LEFT));
-				}
-				
-				SquareType[][] rightSim = simulateRight(board);
-				if (!Arrays.deepEquals(rightSim,  board)) {
-					options.add(new Pair(verticalScore(rightSim), Direction.RIGHT));
-				}
-				
-				if (options.size() == 0) {
-					collide(Direction.DOWN);
-				} else {
-					Collections.sort(options, OPTION_COMPARATOR);
-					collide(options.get(0).getValue());
-				}				
+				collide(getBestNonCollisionDirection(board));			
 			}
 			
-			
 		} while (!done);
+	}
+	
+	Direction getBestNonCollisionDirection(SquareType[][] board) {
+		List<Pair<Integer, Direction>> options = new ArrayList<>();
+
+		SquareType[][] upSim = simulateUp(board);
+		if (!Arrays.deepEquals(upSim,  board)) {
+			options.add(new Pair(verticalScore(upSim), Direction.UP));
+		}
+		
+		SquareType[][] leftSim = simulateLeft(board);
+		if (!Arrays.deepEquals(leftSim,  board)) {
+			options.add(new Pair(verticalScore(leftSim), Direction.LEFT));
+		}
+		
+		SquareType[][] rightSim = simulateRight(board);
+		if (!Arrays.deepEquals(rightSim,  board)) {
+			options.add(new Pair(verticalScore(rightSim), Direction.RIGHT));
+		}
+		
+		if (options.size() == 0) {
+			return Direction.DOWN;
+		}
+		
+		Collections.sort(options, OPTION_COMPARATOR);
+		return options.get(0).getValue();
 	}
 
 	public Direction getBestCollisionDirection(SquareType[][] board) {
