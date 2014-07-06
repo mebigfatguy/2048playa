@@ -218,7 +218,7 @@ public class Playa {
 								} else 
 									simBoard[x][copyY] = SquareType.BLANK;
 							}
-							srcY--;
+							srcY = y;
 						}
 					} else {
 						if (srcYType != SquareType.BLANK) {
@@ -262,7 +262,7 @@ public class Playa {
 								} else 
 									simBoard[copyX][y] = SquareType.BLANK;
 							}
-							srcX--;
+							srcX = x;
 						}
 					} else {
 						if (srcXType != SquareType.BLANK) {
@@ -306,7 +306,7 @@ public class Playa {
 								} else 
 									simBoard[copyX][y] = SquareType.BLANK;
 							}
-							srcX++;
+							srcX = x;
 						}
 					} else {
 						if (srcXType != SquareType.BLANK) {

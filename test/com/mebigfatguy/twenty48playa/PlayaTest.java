@@ -36,7 +36,7 @@ public class PlayaTest {
 	}
 	
 	@Test
-	public void testSimulateUp() {
+	public void testSimulateUp1() {
 		
 		iu.setBoardState(
 			" BLANK TWO TWO TWO " +
@@ -70,7 +70,41 @@ public class PlayaTest {
 	}
 
 	@Test
-	public void testSimulateLeft() {
+	public void testSimulateUp2() {
+		
+		iu.setBoardState(
+			" THIRTYTWO BLANK FOUR EIGHT " +
+			" EIGHT BLANK BLANK BLANK " +
+			" FOUR SIXTEEN FOUR EIGHT " +
+			" FOUR SIXTEEN SIXTEEN EIGHT "
+		);
+		
+		SquareType[][] origBoard = iu.getBoardState();
+		SquareType[][] newBoard = playa.simulateUp(origBoard);
+		
+		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[0][0]);
+		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[1][0]);
+		Assert.assertEquals(SquareType.EIGHT, newBoard[2][0]);
+		Assert.assertEquals(SquareType.SIXTEEN, newBoard[3][0]);
+		
+		Assert.assertEquals(SquareType.EIGHT, newBoard[0][1]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][1]);
+		Assert.assertEquals(SquareType.SIXTEEN, newBoard[2][1]);
+		Assert.assertEquals(SquareType.EIGHT, newBoard[3][1]);
+		
+		Assert.assertEquals(SquareType.EIGHT, newBoard[0][2]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][2]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[2][2]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[3][2]);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[2][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[3][3]);
+	}
+	
+	@Test
+	public void testSimulateLeft1() {
 		
 		iu.setBoardState(
 			" BLANK TWO TWO TWO " +
@@ -104,7 +138,7 @@ public class PlayaTest {
 	}
 	
 	@Test
-	public void testSimulateRight() {
+	public void testSimulateRight1() {
 		
 		iu.setBoardState(
 			" BLANK TWO TWO TWO " +
