@@ -52,18 +52,25 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			MoveOption bestCollisionOption = getBestCollisionDirection(board);
-			MoveOption bestNonCollisionOption = getBestNonCollisionDirection(board);
-			
-			if (2 * bestCollisionOption.getScore() >= bestNonCollisionOption.getScore()) {
-				collide(bestCollisionOption.getDirection());
-			} else {
-				collide(bestNonCollisionOption.getDirection());
-			}
+			MoveOption bestOption = getBestDirection(board);
+			collide(bestOption.getDirection());
+
 			if (finished(board))
 				return;
 			
 		} while (!done);
+	}
+	
+	MoveOption getBestDirection(SquareType[][] board) {
+		
+		MoveOption bestCollisionOption = getBestCollisionDirection(board);
+		MoveOption bestNonCollisionOption = getBestNonCollisionDirection(board);
+		
+		if (2 * bestCollisionOption.getScore() >= bestNonCollisionOption.getScore()) {
+			return bestCollisionOption;
+		} else {
+			return bestNonCollisionOption;
+		}
 	}
 	
 	MoveOption getBestNonCollisionDirection(SquareType[][] board) {
