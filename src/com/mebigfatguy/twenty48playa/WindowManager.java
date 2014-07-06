@@ -47,15 +47,15 @@ public class WindowManager {
 		Desktop dt = Desktop.getDesktop();
 		dt.browse(new URI("http://gabrielecirulli.github.io/2048/"));
 		
-		robot.delay(2000);
+		robot.delay(2500);
 		BufferedImage afterImage = imageUtils.getScreenBuffer();
 		
-		Point difference = imageUtils.findFirstDifference(beforeImage, afterImage, 50);
+		Point difference = imageUtils.findFirstVerticalDifference(beforeImage, afterImage, 50);
 		
 		if (difference == null) {
 			throw new AWTException("Unabled to find title bar of browser");
 		}
-		doubleClick(new Point(difference.x - 5,  difference.y + 5));
+		doubleClick(new Point(difference.x - 5,  difference.y + 3));
 		robot.delay(1000);
 		imageUtils.initialize();
 	}
@@ -76,7 +76,7 @@ public class WindowManager {
 		robot.keyPress(keycode);
 		robot.delay(10);
 		robot.keyRelease(keycode);
-		robot.delay(2000);
+		robot.delay(1000);
 		
 	}
 }

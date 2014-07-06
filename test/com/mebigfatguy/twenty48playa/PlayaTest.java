@@ -36,6 +36,40 @@ public class PlayaTest {
 	}
 	
 	@Test
+	public void testSimulateUp() {
+		
+		iu.setBoardState(
+			" BLANK TWO TWO TWO " +
+			" TWO TWO TWO BLANK " +
+			" TWO FOUR TWO FOUR " +
+			" FOUR TWO TWO FOUR "
+		);
+		
+		SquareType[][] origBoard = iu.getBoardState();
+		SquareType[][] newBoard = playa.simulateUp(origBoard);
+		
+		Assert.assertEquals(SquareType.FOUR, newBoard[0][0]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[1][0]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[2][0]);
+		Assert.assertEquals(SquareType.TWO, newBoard[3][0]);
+		
+		Assert.assertEquals(SquareType.FOUR, newBoard[0][1]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[1][1]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[2][1]);
+		Assert.assertEquals(SquareType.EIGHT, newBoard[3][1]);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][2]);
+		Assert.assertEquals(SquareType.TWO, newBoard[1][2]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[2][2]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[3][2]);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[2][3]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[3][3]);
+	}
+
+	@Test
 	public void testSimulateLeft() {
 		
 		iu.setBoardState(
@@ -67,6 +101,40 @@ public class PlayaTest {
 		Assert.assertEquals(SquareType.FOUR, newBoard[1][3]);
 		Assert.assertEquals(SquareType.FOUR, newBoard[2][3]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[3][3]);
+	}
+	
+	@Test
+	public void testSimulateRight() {
+		
+		iu.setBoardState(
+			" BLANK TWO TWO TWO " +
+			" TWO TWO TWO BLANK " +
+			" TWO FOUR TWO FOUR " +
+			" FOUR TWO TWO FOUR "
+		);
+		
+		SquareType[][] origBoard = iu.getBoardState();
+		SquareType[][] newBoard = playa.simulateRight(origBoard);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][0]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][0]);
+		Assert.assertEquals(SquareType.TWO, newBoard[2][0]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[3][0]);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][1]);
+		Assert.assertEquals(SquareType.BLANK, newBoard[1][1]);
+		Assert.assertEquals(SquareType.TWO, newBoard[2][1]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[3][1]);
+		
+		Assert.assertEquals(SquareType.TWO, newBoard[0][2]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[1][2]);
+		Assert.assertEquals(SquareType.TWO, newBoard[2][2]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[3][2]);
+		
+		Assert.assertEquals(SquareType.BLANK, newBoard[0][3]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[1][3]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[2][3]);
+		Assert.assertEquals(SquareType.FOUR, newBoard[3][3]);
 	}
 	
 	@Test

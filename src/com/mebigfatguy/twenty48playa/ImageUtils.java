@@ -102,7 +102,7 @@ public class ImageUtils {
 		return dstImage;
 	}
 	
-	public Point findFirstDifference(BufferedImage image1, BufferedImage image2, int diffLen) {
+	public Point findFirstVerticalDifference(BufferedImage image1, BufferedImage image2, int diffLen) {
 		Raster r1 = image1.getRaster();
 		Raster r2 = image2.getRaster();
 		
