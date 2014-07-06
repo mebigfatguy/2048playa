@@ -52,7 +52,7 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			MoveOption bestOption = getBestDirection(board);
+			MoveOption bestOption = getBestDirection(board, 1);
 			collide(bestOption.getDirection());
 
 			if (finished(board))
@@ -61,15 +61,31 @@ public class Playa {
 		} while (!done);
 	}
 	
-	MoveOption getBestDirection(SquareType[][] board) {
+	MoveOption getBestDirection(SquareType[][] board, int depth) {
 		
-		MoveOption bestCollisionOption = getBestCollisionDirection(board);
-		MoveOption bestNonCollisionOption = getBestNonCollisionDirection(board);
+		MoveOption bestFirstCollisionOption = getBestCollisionDirection(board);
+		MoveOption bestFirstNonCollisionOption = getBestNonCollisionDirection(board);
 		
-		if (2 * bestCollisionOption.getScore() >= bestNonCollisionOption.getScore()) {
-			return bestCollisionOption;
+		double collisionScore = bestFirstCollisionOption.getScore();
+		double nonCollisionScore = bestFirstNonCollisionOption.getScore();
+		
+		if (depth <= 2) {
+			if (collisionScore >= 0) {
+				MoveOption bestSecondCollisionOption = getBestDirection(bestFirstCollisionOption.getResultantBoard(), depth+1);
+				collisionScore += .75 * bestSecondCollisionOption.getScore();
+			}
+			
+			if (nonCollisionScore >= 0) {
+				MoveOption bestSecondNonCollisionOption = getBestDirection(bestFirstNonCollisionOption.getResultantBoard(), depth+1);
+				nonCollisionScore += .75 * bestSecondNonCollisionOption.getScore();
+			}
+		}
+		
+		
+		if (2 * collisionScore >= nonCollisionScore) {
+			return bestFirstCollisionOption;
 		} else {
-			return bestNonCollisionOption;
+			return bestFirstNonCollisionOption;
 		}
 	}
 	
