@@ -84,12 +84,33 @@ public class Playa {
 			options.add(new Pair(verticalScore(rightSim), Direction.RIGHT));
 		}
 		
+		if (fillCount(board) > 12) {
+			SquareType[][] downSim = simulateDown(board);
+			if (!Arrays.deepEquals(downSim,  board)) {
+				options.add(new Pair(verticalScore(downSim), Direction.DOWN));
+			}
+		}
+		
 		if (options.size() == 0) {
 			return new Pair<Integer, Direction>(Integer.valueOf(0), Direction.DOWN);
 		}
 		
 		Collections.sort(options, OPTION_COMPARATOR);
 		return options.get(0);
+	}
+
+	private int fillCount(SquareType[][] board) {
+		int count = 0;
+		
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				if (board[x][y] == SquareType.BLANK) {
+					count++;
+				}
+			}
+		}
+		
+		return count;
 	}
 
 	public Pair<Integer, Direction> getBestCollisionDirection(SquareType[][] board) {
@@ -228,6 +249,50 @@ public class Playa {
 								for (int copyY = y + 1; copyY < 4; copyY++) {
 									if (srcY < 4) {
 										simBoard[x][copyY] = simBoard[x][srcY++];
+									} else 
+										simBoard[x][copyY] = SquareType.BLANK;
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		return simBoard;
+	}
+	
+	SquareType[][] simulateDown(SquareType[][] board) {
+		SquareType[][] simBoard = new SquareType[4][4];
+		copyBoard(board, simBoard);
+		
+		for (int x = 0; x < 4; x++) {
+			for (int y = 3; y > 0; y--) {
+				SquareType yType = simBoard[x][y];
+				for (int srcY = y - 1; srcY >= 0; srcY--) {
+					SquareType srcYType = simBoard[x][srcY];
+					if (yType == SquareType.BLANK) {
+						if (srcYType != SquareType.BLANK) {
+							simBoard[x][y] = srcYType;
+							yType = srcYType;
+							int tY = srcY - 1;
+							for (int copyY = y - 1; copyY >= 0; copyY--) {
+								if (tY >= 0) {
+									simBoard[x][copyY] = simBoard[x][tY--];
+								} else 
+									simBoard[x][copyY] = SquareType.BLANK;
+							}
+							srcY = y;
+						}
+					} else {
+						if (srcYType != SquareType.BLANK) {
+							if (srcYType == yType) {
+								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
+								srcY--;
+								for (int copyY = y - 1; copyY >= 0; copyY--) {
+									if (srcY >= 0) {
+										simBoard[x][copyY] = simBoard[x][srcY--];
 									} else 
 										simBoard[x][copyY] = SquareType.BLANK;
 								}
