@@ -41,21 +41,23 @@ public class WindowManager {
 		robot = new Robot();
 	}
 	
-	public void launch2048() throws URISyntaxException, IOException, AWTException {
+	public void launch2048(boolean resize) throws URISyntaxException, IOException, AWTException {
 		BufferedImage beforeImage = imageUtils.getScreenBuffer();
 		
 		Desktop dt = Desktop.getDesktop();
 		dt.browse(new URI("http://gabrielecirulli.github.io/2048/"));
 		
 		robot.delay(2500);
-		BufferedImage afterImage = imageUtils.getScreenBuffer();
-		
-		Point difference = imageUtils.findFirstVerticalDifference(beforeImage, afterImage, 50);
-		
-		if (difference == null) {
-			throw new AWTException("Unabled to find title bar of browser");
+		if (resize) {
+			BufferedImage afterImage = imageUtils.getScreenBuffer();
+			
+			Point difference = imageUtils.findFirstVerticalDifference(beforeImage, afterImage, 50);
+			
+			if (difference == null) {
+				throw new AWTException("Unabled to find title bar of browser");
+			}
+			doubleClick(new Point(difference.x - 5,  difference.y + 3));
 		}
-		doubleClick(new Point(difference.x - 5,  difference.y + 3));
 		robot.delay(1000);
 		imageUtils.initialize();
 	}

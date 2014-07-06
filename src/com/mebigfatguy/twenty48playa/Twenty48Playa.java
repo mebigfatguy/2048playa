@@ -30,9 +30,11 @@ public class Twenty48Playa {
 			ImageUtils iu = new ImageUtils();
 			WindowManager wm = new WindowManager(iu);
 			
+			boolean firstTime = true;
 			int choice = JOptionPane.CANCEL_OPTION;
 			do {
-				wm.launch2048();
+				wm.launch2048(firstTime);
+				firstTime = false;
 				Playa playa = new Playa(iu, wm);
 				
 				playa.playGame();
