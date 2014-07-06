@@ -52,13 +52,13 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			Pair<Direction, Integer> bestCollisionOption = getBestCollisionDirection(board);
-			Pair<Direction, Integer> bestNonCollisionOption = getBestNonCollisionDirection(board);
+			MoveOption bestCollisionOption = getBestCollisionDirection(board);
+			MoveOption bestNonCollisionOption = getBestNonCollisionDirection(board);
 			
-			if (2 * bestCollisionOption.getValue().intValue() >= bestNonCollisionOption.getValue().intValue()) {
-				collide(bestCollisionOption.getKey());
+			if (2 * bestCollisionOption.getScore() >= bestNonCollisionOption.getScore()) {
+				collide(bestCollisionOption.getDirection());
 			} else {
-				collide(bestNonCollisionOption.getKey());
+				collide(bestNonCollisionOption.getDirection());
 			}
 			if (finished(board))
 				return;
@@ -66,33 +66,33 @@ public class Playa {
 		} while (!done);
 	}
 	
-	Pair<Direction, Integer> getBestNonCollisionDirection(SquareType[][] board) {
-		List<Pair<Direction, Integer>> options = new ArrayList<>();
+	MoveOption getBestNonCollisionDirection(SquareType[][] board) {
+		List<MoveOption> options = new ArrayList<>();
 
 		SquareType[][] upSim = simulateUp(board);
 		if (!Arrays.deepEquals(upSim,  board)) {
-			options.add(new Pair<Direction, Integer>(Direction.UP, verticalScore(upSim)));
+			options.add(new MoveOption(Direction.UP, verticalScore(upSim), upSim));
 		}
 		
 		SquareType[][] leftSim = simulateLeft(board);
 		if (!Arrays.deepEquals(leftSim,  board)) {
-			options.add(new Pair<Direction, Integer>(Direction.LEFT, verticalScore(leftSim)));
+			options.add(new MoveOption(Direction.LEFT, verticalScore(leftSim), leftSim));
 		}
 		
 		SquareType[][] rightSim = simulateRight(board);
 		if (!Arrays.deepEquals(rightSim,  board)) {
-			options.add(new Pair<Direction, Integer>(Direction.RIGHT, verticalScore(rightSim)));
+			options.add(new MoveOption(Direction.RIGHT, verticalScore(rightSim), rightSim));
 		}
 		
 		if (fillCount(board) > 12) {
 			SquareType[][] downSim = simulateDown(board);
 			if (!Arrays.deepEquals(downSim,  board)) {
-				options.add(new Pair<Direction, Integer>(Direction.DOWN, verticalScore(downSim)));
+				options.add(new MoveOption(Direction.DOWN, verticalScore(downSim), downSim));
 			}
 		}
 		
 		if (options.size() == 0) {
-			return new Pair<Direction, Integer>(Direction.DOWN, Integer.valueOf(0));
+			return new MoveOption(Direction.DOWN, Integer.valueOf(0), simulateDown(board));
 		}
 		
 		Collections.sort(options, OPTION_COMPARATOR);
@@ -113,7 +113,7 @@ public class Playa {
 		return count;
 	}
 
-	public Pair<Direction, Integer> getBestCollisionDirection(SquareType[][] board) {
+	public MoveOption getBestCollisionDirection(SquareType[][] board) {
 		SquareType bestCollision = SquareType.BLANK;
 		Direction bestDirection = Direction.NONE;
 		
@@ -138,12 +138,12 @@ public class Playa {
 		}
 		
 		if (bestCollision == SquareType.BLANK)
-			return new Pair<Direction, Integer>(Direction.DOWN, Integer.valueOf(-1));
+			return new MoveOption(Direction.DOWN, Integer.valueOf(-1), simulateDown(board));
 		
 		int collisionScore = (int) Math.pow(2, bestCollision.ordinal() - SquareType.TWO.ordinal() + 1);
 		
 		if (bestDirection == Direction.UP) 
-			return new Pair<Direction, Integer>(Direction.UP, Integer.valueOf(verticalScore(simulateUp(board)) + collisionScore));
+			return new MoveOption(Direction.UP, Integer.valueOf(verticalScore(simulateUp(board)) + collisionScore), simulateUp(board));
 		
 		SquareType[][] leftSim = simulateLeft(board);
 		SquareType[][] rightSim = simulateRight(board);
@@ -152,12 +152,13 @@ public class Playa {
 		int rightScore = verticalScore(rightSim);
 		
 		if (leftScore > rightScore) {
-			return new Pair<Direction, Integer>(Direction.LEFT, Integer.valueOf(leftScore + collisionScore));
+			return new MoveOption(Direction.LEFT, Integer.valueOf(leftScore + collisionScore), leftSim);
 		} else if (leftScore < rightScore) {
-			return new Pair<Direction, Integer>(Direction.RIGHT, Integer.valueOf(rightScore + collisionScore));
+			return new MoveOption(Direction.RIGHT, Integer.valueOf(rightScore + collisionScore), rightSim);
 		}
 		
-		return new Pair<Direction, Integer>(random.nextBoolean() ? Direction.LEFT : Direction.RIGHT, Integer.valueOf(leftScore + collisionScore));
+		Direction randomDir = random.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		return new MoveOption(randomDir, Integer.valueOf(leftScore + collisionScore), (randomDir == Direction.LEFT ? leftSim : rightSim));
 	}
 	
 	private boolean finished(SquareType[][] board) {

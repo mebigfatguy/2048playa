@@ -321,7 +321,7 @@ public class PlayaTest {
 			
 			SquareType[][] origBoard = iu.getBoardState();
 			
-			Assert.assertEquals(new Pair<Integer, Direction>(Integer.valueOf(0), Direction.DOWN), playa.getBestNonCollisionDirection(origBoard));
+			Assert.assertEquals(new MoveOption(Direction.DOWN, Integer.valueOf(0), playa.simulateDown(origBoard)), playa.getBestNonCollisionDirection(origBoard));
 		
 	}
 }

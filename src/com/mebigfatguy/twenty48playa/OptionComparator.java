@@ -18,15 +18,15 @@ package com.mebigfatguy.twenty48playa;
 
 import java.util.Comparator;
 
-public class OptionComparator implements Comparator<Pair<Direction, Integer>> {
+public class OptionComparator implements Comparator<MoveOption> {
 
 	@Override
-	public int compare(Pair<Direction, Integer> option1, Pair<Direction, Integer> option2) {
-		int result = -(option1.getValue().intValue() - option2.getValue().intValue());
+	public int compare(MoveOption option1, MoveOption option2) {
+		int result = -(option1.getScore() - option2.getScore());
 		if (result != 0)
 			return result;
 		
-		return option1.getKey().ordinal() - option2.getKey().ordinal();
+		return option1.getDirection().ordinal() - option2.getDirection().ordinal();
 	}
 
 }
