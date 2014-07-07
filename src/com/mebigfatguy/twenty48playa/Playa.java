@@ -59,7 +59,7 @@ public class Playa {
 	
 	MoveOption getBestDirection(MoveOption origOption, int depth) {
 		
-		if (depth >= 3) {
+		if (depth >= 5) {
 			return origOption;
 		}
 		
@@ -67,27 +67,27 @@ public class Playa {
 		
 		Pair<SquareType[][], Integer> upSim = simulateUp(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(), upSim.getKey())) {
-			MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, origOption.getScore() + upSim.getValue() / (depth + 1), upSim.getKey()), depth + 1);
+			MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, origOption.getScore() + upSim.getValue() / Math.sqrt(depth + 1), upSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
 		}
 		
-		if (fillCount(origOption.getResultantBoard()) > 12) {
+		if (fillCount(origOption.getResultantBoard()) > 14) {
 			Pair<SquareType[][], Integer> downSim = simulateDown(origOption.getResultantBoard());
 			if (!Arrays.deepEquals(origOption.getResultantBoard(), downSim.getKey())) {
-				MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, origOption.getScore() + downSim.getValue() / (depth + 1), downSim.getKey()), depth + 1);
+				MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, origOption.getScore() + downSim.getValue() / Math.sqrt(depth + 1), downSim.getKey()), depth + 1);
 				options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
 			}
 		}	
 		
 		Pair<SquareType[][], Integer> leftSim = simulateLeft(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(),  leftSim.getKey())) {
-			MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, origOption.getScore() + leftSim.getValue() / (depth + 1), leftSim.getKey()), depth + 1);
+			MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, origOption.getScore() + leftSim.getValue() / Math.sqrt(depth + 1), leftSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
 		}
 		
 		Pair<SquareType[][], Integer> rightSim = simulateRight(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(), rightSim.getKey())) {
-			MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, origOption.getScore() + rightSim.getValue() / (depth + 1), rightSim.getKey()), depth + 1);
+			MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, origOption.getScore() + rightSim.getValue() / Math.sqrt(depth + 1), rightSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
 		}
 		
