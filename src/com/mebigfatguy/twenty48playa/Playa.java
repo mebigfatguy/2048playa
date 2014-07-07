@@ -49,7 +49,6 @@ public class Playa {
 			SquareType[][] board = imageUtils.getBoardState();
 			
 			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  0);
-			//MoveOption bestOption = getBestDirection(board, 1);
 			collide(bestOption.getDirection());
 
 			if (finished(board))
