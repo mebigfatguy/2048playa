@@ -45,6 +45,7 @@ public class Playa {
 		
 		oldBoard = new SquareType[4][4];
 		boolean done = false;
+		boolean seen2048 = false;
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
@@ -54,9 +55,14 @@ public class Playa {
 			if (finished(board))
 				return;
 			
+			if (!seen2048 && has2048(board)) {
+				seen2048 = true;
+				windowManager.clickContinue();
+			}
+			
 		} while (!done);
 	}
-	
+
 	MoveOption getBestDirection(MoveOption origOption, int depth) {
 		
 		if (depth >= 5) {
@@ -99,6 +105,18 @@ public class Playa {
 		return options.get(0);
 	}
 
+	private boolean has2048(SquareType[][] board) {
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				if (board[x][y] == SquareType.TWENTYFOURTYEIGHT) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	private int fillCount(SquareType[][] board) {
 		int count = 0;
 		

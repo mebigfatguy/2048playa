@@ -39,7 +39,8 @@ public class Twenty48Playa {
 				
 				playa.playGame();
 				
-				choice = JOptionPane.showConfirmDialog(null, "Try again?");
+				//choice = JOptionPane.showConfirmDialog(null, "Try again?");
+				choice = JOptionPane.OK_OPTION;
 			} while (choice == JOptionPane.OK_OPTION);
 				
 		} catch (Exception e) {

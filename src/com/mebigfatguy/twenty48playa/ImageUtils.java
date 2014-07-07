@@ -41,6 +41,7 @@ public class ImageUtils {
 	private Robot robot;
 	private File debugDir;
 	private Rectangle boardCoordinates;
+
 	private Rectangle[][] squareCoordinates;
 	
 	public ImageUtils() throws AWTException {
@@ -64,6 +65,10 @@ public class ImageUtils {
 		}
 		
 		return state;
+	}
+	
+	public Rectangle getBoardCoordinates() {
+		return boardCoordinates;
 	}
 	
 	public Rectangle getScreenBounds() {
