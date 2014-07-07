@@ -16,52 +16,42 @@
  */
 package com.mebigfatguy.twenty48playa;
 
-import java.util.Arrays;
+public class Pair<K, V> {
 
-public class MoveOption {
-	Direction direction;
-	private double score;
-	SquareType[][] resultantBoard;
+	private K key;
+	private V value;
 	
+	public Pair(K k, V v) {
+		key = k;
+		value = v;
+	}
 	
-	public MoveOption(Direction dir, double dirScore, SquareType[][] board) {
-		direction = dir;
-		score = dirScore;
-		resultantBoard = board;
+	public K getKey() {
+		return key;
 	}
-
-	public Direction getDirection() {
-		return direction;
-	}
-
-
-	public double getScore() {
-		return score;
-	}
-
-
-	public SquareType[][] getResultantBoard() {
-		return resultantBoard;
+	
+	public V getValue() {
+		return value;
 	}
 	
 	@Override
 	public int hashCode() {
-		return direction.hashCode() ^ ((int) score) ^ Arrays.deepHashCode(resultantBoard);
+		return key.hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof MoveOption))
+		if (!(o instanceof Pair)) 
 			return false;
 		
-		MoveOption that = (MoveOption) o;
+		@SuppressWarnings("unchecked")
+		Pair<K, V> that = (Pair<K, V>) o;
 		
-		return direction == that.direction && score == that.score && Arrays.deepEquals(resultantBoard, that.resultantBoard);
+		return (key.equals(that.key));
 	}
 	
 	@Override
 	public String toString() {
-		return "MoveOption[" + direction + ", " + score + ", " + Arrays.deepToString(resultantBoard) + "]";
+		return "Pair[" + key + ", " + value + "]";
 	}
-	
 }

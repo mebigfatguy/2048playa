@@ -22,9 +22,9 @@ public class OptionComparator implements Comparator<MoveOption> {
 
 	@Override
 	public int compare(MoveOption option1, MoveOption option2) {
-		int result = -(option1.getScore() - option2.getScore());
-		if (result != 0)
-			return result;
+		double delta = option2.getScore() - option1.getScore();
+		if (delta != 0)
+			return ((int) (delta * 1000));
 		
 		return option1.getDirection().ordinal() - option2.getDirection().ordinal();
 	}

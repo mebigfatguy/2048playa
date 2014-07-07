@@ -17,13 +17,11 @@
 package com.mebigfatguy.twenty48playa;
 
 import java.awt.AWTException;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +34,11 @@ public class Playa {
 	
 	private ImageUtils imageUtils;
 	private WindowManager windowManager;
-	private Random random;
 	private SquareType[][] oldBoard;
 	
 	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
 		windowManager = wm;
-		random = new Random(System.currentTimeMillis());
 	}
 	
 	public void playGame() throws AWTException {
@@ -52,7 +48,8 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			MoveOption bestOption = getBestDirection(board, 1);
+			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  0);
+			//MoveOption bestOption = getBestDirection(board, 1);
 			collide(bestOption.getDirection());
 
 			if (finished(board))
@@ -61,61 +58,42 @@ public class Playa {
 		} while (!done);
 	}
 	
-	MoveOption getBestDirection(SquareType[][] board, int depth) {
+	MoveOption getBestDirection(MoveOption origOption, int depth) {
 		
-		MoveOption bestFirstCollisionOption = getBestCollisionDirection(board);
-		MoveOption bestFirstNonCollisionOption = getBestNonCollisionDirection(board);
+		if (depth >= 3) {
+			return origOption;
+		}
 		
-		double collisionScore = bestFirstCollisionOption.getScore();
-		double nonCollisionScore = bestFirstNonCollisionOption.getScore();
+		List<MoveOption> options = new ArrayList<MoveOption>();
 		
-		if (depth <= 2) {
-			if (collisionScore >= 0) {
-				MoveOption bestSecondCollisionOption = getBestDirection(bestFirstCollisionOption.getResultantBoard(), depth+1);
-				collisionScore += .75 * bestSecondCollisionOption.getScore();
+		Pair<SquareType[][], Integer> upSim = simulateUp(origOption.getResultantBoard());
+		if (!Arrays.deepEquals(origOption.getResultantBoard(), upSim.getKey())) {
+			MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, origOption.getScore() + upSim.getValue() / (depth + 1), upSim.getKey()), depth + 1);
+			options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
+		}
+		
+		if (fillCount(origOption.getResultantBoard()) > 12) {
+			Pair<SquareType[][], Integer> downSim = simulateDown(origOption.getResultantBoard());
+			if (!Arrays.deepEquals(origOption.getResultantBoard(), downSim.getKey())) {
+				MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, origOption.getScore() + downSim.getValue() / (depth + 1), downSim.getKey()), depth + 1);
+				options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
 			}
-			
-			if (nonCollisionScore >= 0) {
-				MoveOption bestSecondNonCollisionOption = getBestDirection(bestFirstNonCollisionOption.getResultantBoard(), depth+1);
-				nonCollisionScore += .75 * bestSecondNonCollisionOption.getScore();
-			}
+		}	
+		
+		Pair<SquareType[][], Integer> leftSim = simulateLeft(origOption.getResultantBoard());
+		if (!Arrays.deepEquals(origOption.getResultantBoard(),  leftSim.getKey())) {
+			MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, origOption.getScore() + leftSim.getValue() / (depth + 1), leftSim.getKey()), depth + 1);
+			options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
 		}
 		
-		
-		if (2 * collisionScore >= nonCollisionScore) {
-			return bestFirstCollisionOption;
-		} else {
-			return bestFirstNonCollisionOption;
-		}
-	}
-	
-	MoveOption getBestNonCollisionDirection(SquareType[][] board) {
-		List<MoveOption> options = new ArrayList<>();
-
-		SquareType[][] upSim = simulateUp(board);
-		if (!Arrays.deepEquals(upSim,  board)) {
-			options.add(new MoveOption(Direction.UP, verticalScore(upSim), upSim));
+		Pair<SquareType[][], Integer> rightSim = simulateRight(origOption.getResultantBoard());
+		if (!Arrays.deepEquals(origOption.getResultantBoard(), rightSim.getKey())) {
+			MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, origOption.getScore() + rightSim.getValue() / (depth + 1), rightSim.getKey()), depth + 1);
+			options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
 		}
 		
-		SquareType[][] leftSim = simulateLeft(board);
-		if (!Arrays.deepEquals(leftSim,  board)) {
-			options.add(new MoveOption(Direction.LEFT, verticalScore(leftSim), leftSim));
-		}
-		
-		SquareType[][] rightSim = simulateRight(board);
-		if (!Arrays.deepEquals(rightSim,  board)) {
-			options.add(new MoveOption(Direction.RIGHT, verticalScore(rightSim), rightSim));
-		}
-		
-		if (fillCount(board) > 12) {
-			SquareType[][] downSim = simulateDown(board);
-			if (!Arrays.deepEquals(downSim,  board)) {
-				options.add(new MoveOption(Direction.DOWN, verticalScore(downSim), downSim));
-			}
-		}
-		
-		if (options.size() == 0) {
-			return new MoveOption(Direction.DOWN, Integer.valueOf(0), simulateDown(board));
+		if (options.isEmpty()) {
+			return new MoveOption(Direction.DOWN, 0.0, origOption.getResultantBoard());
 		}
 		
 		Collections.sort(options, OPTION_COMPARATOR);
@@ -127,7 +105,7 @@ public class Playa {
 		
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {
-				if (board[x][y] == SquareType.BLANK) {
+				if (board[x][y] != SquareType.BLANK) {
 					count++;
 				}
 			}
@@ -136,54 +114,6 @@ public class Playa {
 		return count;
 	}
 
-	public MoveOption getBestCollisionDirection(SquareType[][] board) {
-		SquareType bestCollision = SquareType.BLANK;
-		Direction bestDirection = Direction.NONE;
-		
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 4; x++) {
-				SquareType st = board[x][y];
-				if (st != SquareType.BLANK) {
-					for (Direction d : Direction.values()) {
-						if (d == Direction.RIGHT) {
-							break;
-						}
-						SquareType neighbor = getNextSquareType(board, x, y, d);
-						if (st == neighbor) {
-							if ((st.ordinal() > bestCollision.ordinal()) || ((st.ordinal() == bestCollision.ordinal()) && (d.ordinal() < bestDirection.ordinal()))) {
-								bestCollision = st;
-								bestDirection = d;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		if (bestCollision == SquareType.BLANK)
-			return new MoveOption(Direction.DOWN, Integer.valueOf(-1), simulateDown(board));
-		
-		int collisionScore = (int) Math.pow(2, bestCollision.ordinal() - SquareType.TWO.ordinal() + 1);
-		
-		if (bestDirection == Direction.UP) 
-			return new MoveOption(Direction.UP, Integer.valueOf(verticalScore(simulateUp(board)) + collisionScore), simulateUp(board));
-		
-		SquareType[][] leftSim = simulateLeft(board);
-		SquareType[][] rightSim = simulateRight(board);
-		
-		int leftScore = verticalScore(leftSim);
-		int rightScore = verticalScore(rightSim);
-		
-		if (leftScore > rightScore) {
-			return new MoveOption(Direction.LEFT, Integer.valueOf(leftScore + collisionScore), leftSim);
-		} else if (leftScore < rightScore) {
-			return new MoveOption(Direction.RIGHT, Integer.valueOf(rightScore + collisionScore), rightSim);
-		}
-		
-		Direction randomDir = random.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		return new MoveOption(randomDir, Integer.valueOf(leftScore + collisionScore), (randomDir == Direction.LEFT ? leftSim : rightSim));
-	}
-	
 	private boolean finished(SquareType[][] board) {
 
 		boolean finished = Arrays.deepEquals(oldBoard, board);
@@ -192,37 +122,6 @@ public class Playa {
 		return finished;
 	}
 	
-	int verticalScore(SquareType[][] board) {
-		int score = 0;
-		
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 4; x++) {
-				if ((board[x][y] == board[x][y+1]) && (board[x][y] != SquareType.BLANK)) {
-					score += Math.pow(2, board[x][y].ordinal() - SquareType.TWO.ordinal() + 1);
-				}
-			}
-		}
-		
-		return score;
-	}
-
-	private SquareType getNextSquareType(SquareType[][] board, int x, int y, Direction d) {
-		Point move = d.getMovement();
-		
-		x+= move.x;
-		y+= move.y;
-		
-		while ((x >= 0) && (x <= 3) && (y >= 0) && (y <= 3)) {
-			SquareType st = board[x][y];
-			if (st != SquareType.BLANK)
-				return st;
-			x+= move.x;
-			y+= move.y;
-		}
-		
-		return SquareType.BLANK;
-	}
-
 	private void collide(Direction d) {
 		switch (d) {
 			case UP:
@@ -243,9 +142,10 @@ public class Playa {
 		}	
 	}
 	
-	SquareType[][] simulateUp(SquareType[][] board) {
+	Pair<SquareType[][], Integer> simulateUp(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
+		int score = 0;
 		
 		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 3; y++) {
@@ -269,6 +169,7 @@ public class Playa {
 						if (srcYType != SquareType.BLANK) {
 							if (srcYType == yType) {
 								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
+								score += Math.pow(2, (srcYType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
 								srcY++;
 								for (int copyY = y + 1; copyY < 4; copyY++) {
 									if (srcY < 4) {
@@ -284,12 +185,13 @@ public class Playa {
 			}
 		}
 		
-		return simBoard;
+		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
 	
-	SquareType[][] simulateDown(SquareType[][] board) {
+	Pair<SquareType[][], Integer> simulateDown(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
+		int score = 0;
 		
 		for (int x = 0; x < 4; x++) {
 			for (int y = 3; y > 0; y--) {
@@ -313,6 +215,7 @@ public class Playa {
 						if (srcYType != SquareType.BLANK) {
 							if (srcYType == yType) {
 								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
+								score += Math.pow(2, (srcYType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
 								srcY--;
 								for (int copyY = y - 1; copyY >= 0; copyY--) {
 									if (srcY >= 0) {
@@ -328,12 +231,13 @@ public class Playa {
 			}
 		}
 		
-		return simBoard;
+		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
 
-	SquareType[][] simulateLeft(SquareType[][] board) {
+	Pair<SquareType[][], Integer> simulateLeft(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
+		int score = 0;
 		
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 3; x++) {
@@ -357,6 +261,7 @@ public class Playa {
 						if (srcXType != SquareType.BLANK) {
 							if (srcXType == xType) {
 								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
+								score += Math.pow(2, (srcXType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
 								srcX++;
 								for (int copyX = x + 1; copyX < 4; copyX++) {
 									if (srcX < 4) {
@@ -372,12 +277,13 @@ public class Playa {
 			}
 		}
 		
-		return simBoard;
+		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
 
-	SquareType[][] simulateRight(SquareType[][] board) {
+	Pair<SquareType[][], Integer> simulateRight(SquareType[][] board) {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
+		int score = 0;
 		
 		for (int y = 0; y < 4; y++) {
 			for (int x = 3; x > 0; x--) {
@@ -401,6 +307,7 @@ public class Playa {
 						if (srcXType != SquareType.BLANK) {
 							if (srcXType == xType) {
 								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
+								score += Math.pow(2, (srcXType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
 								srcX--;
 								for (int copyX = x - 1; copyX >= 0; copyX--) {
 									if (srcX >= 0) {
@@ -416,7 +323,7 @@ public class Playa {
 			}
 		}
 		
-		return simBoard;
+		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
 	
 	private void copyBoard(SquareType[][] srcBoard, SquareType[][] dstBoard) {

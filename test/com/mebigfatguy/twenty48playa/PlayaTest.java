@@ -46,7 +46,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateUp(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateUp(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.FOUR, newBoard[0][0]);
 		Assert.assertEquals(SquareType.FOUR, newBoard[1][0]);
@@ -80,7 +81,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateUp(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateUp(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[0][0]);
 		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[1][0]);
@@ -114,7 +116,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateDown(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateDown(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.BLANK, newBoard[0][0]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[1][0]);
@@ -148,7 +151,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateDown(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateDown(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.BLANK, newBoard[0][0]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[1][0]);
@@ -182,7 +186,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateLeft(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateLeft(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.FOUR, newBoard[0][0]);
 		Assert.assertEquals(SquareType.TWO, newBoard[1][0]);
@@ -216,7 +221,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateLeft(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateLeft(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[0][0]);
 		Assert.assertEquals(SquareType.FOUR, newBoard[1][0]);
@@ -251,7 +257,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateRight(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateRight(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.BLANK, newBoard[0][0]);
 		Assert.assertEquals(SquareType.BLANK, newBoard[1][0]);
@@ -285,7 +292,8 @@ public class PlayaTest {
 		);
 		
 		SquareType[][] origBoard = iu.getBoardState();
-		SquareType[][] newBoard = playa.simulateRight(origBoard);
+		Pair<SquareType[][], Integer> newSim = playa.simulateRight(origBoard);
+		SquareType[][] newBoard = newSim.getKey();
 		
 		Assert.assertEquals(SquareType.BLANK, newBoard[0][0]);
 		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[1][0]);
@@ -307,21 +315,5 @@ public class PlayaTest {
 		Assert.assertEquals(SquareType.THIRTYTWO, newBoard[2][3]);
 		Assert.assertEquals(SquareType.EIGHT, newBoard[3][3]);
 
-	}
-	
-	@Test
-	public void testNeedDown() {
-		
-		iu.setBoardState(
-				" TWO FOUR TWO FOUR " +
-				" FOUR TWO FOUR TWO " +
-				" TWO FOUR TWO FOUR " +
-				" BLANK BLANK BLANK BLANK "
-			);
-			
-			SquareType[][] origBoard = iu.getBoardState();
-			
-			Assert.assertEquals(new MoveOption(Direction.DOWN, Integer.valueOf(0), playa.simulateDown(origBoard)), playa.getBestNonCollisionDirection(origBoard));
-		
 	}
 }
