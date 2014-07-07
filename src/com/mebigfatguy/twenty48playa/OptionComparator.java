@@ -25,8 +25,14 @@ public class OptionComparator implements Comparator<MoveOption> {
 		double delta = option2.getScore() - option1.getScore();
 		if (delta != 0)
 			return ((int) (delta * 1000));
+		Direction dir1 = option1.getDirection();
+		Direction dir2 = option2.getDirection();
 		
-		return option1.getDirection().ordinal() - option2.getDirection().ordinal();
+		if (dir1 == Direction.RIGHT)
+			dir1 = Direction.LEFT;
+		if (dir2 == Direction.RIGHT)
+			dir2 = Direction.RIGHT;
+		return dir1.ordinal() - dir2.ordinal();
 	}
 
 }
