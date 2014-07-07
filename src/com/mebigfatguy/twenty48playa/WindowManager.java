@@ -17,14 +17,19 @@
 package com.mebigfatguy.twenty48playa;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import javax.swing.JWindow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,25 +46,45 @@ public class WindowManager {
 		robot = new Robot();
 	}
 	
-	public void launch2048(boolean resize) throws URISyntaxException, IOException, AWTException {
-		BufferedImage beforeImage = imageUtils.getScreenBuffer();
+	public void launch2048(boolean firstTime) throws URISyntaxException, IOException, AWTException {
 		
-		Desktop dt = Desktop.getDesktop();
-		dt.browse(new URI("http://gabrielecirulli.github.io/2048/"));
-		
-		robot.delay(2500);
-		if (resize) {
-			BufferedImage afterImage = imageUtils.getScreenBuffer();
+		JWindow blackWindow = null;
+		try {
+			Rectangle screenBounds = imageUtils.getScreenBounds();
 			
-			Point difference = imageUtils.findFirstVerticalDifference(beforeImage, afterImage, 50);
-			
-			if (difference == null) {
-				throw new AWTException("Unabled to find title bar of browser");
+			if (firstTime) {
+				blackWindow = new JWindow() {
+					@Override
+					public void paint(Graphics g) {
+					}
+				};
+				blackWindow.setBounds(screenBounds);
+				blackWindow.setBackground(Color.BLACK);
+				blackWindow.setVisible(true);
 			}
-			doubleClick(new Point(difference.x - 5,  difference.y + 3));
+			
+			Desktop dt = Desktop.getDesktop();
+			dt.browse(new URI("http://gabrielecirulli.github.io/2048/"));
+			
+			robot.delay(2500);
+			if (firstTime) {
+				BufferedImage image = imageUtils.getScreenBuffer();
+				imageUtils.writeImage(image,  "screen");
+				
+				Rectangle browserBounds = imageUtils.findBlackInset(image);
+				
+				if ((browserBounds != null) && !browserBounds.equals(screenBounds)) {
+					doubleClick(new Point(browserBounds.x + 40,  browserBounds.y + 5));
+					robot.delay(2000);
+				}
+			}
+			robot.delay(1000);
+			imageUtils.initialize();
+		} finally {
+			if (blackWindow != null) {
+				blackWindow.dispose();
+			}
 		}
-		robot.delay(1000);
-		imageUtils.initialize();
 	}
 	
 	public void click(Point pt) {
@@ -74,7 +99,7 @@ public class WindowManager {
 		click(pt);
 	}
 
-	public void key(int keycode) {
+	public void key(int keycode) {				
 		robot.keyPress(keycode);
 		robot.delay(10);
 		robot.keyRelease(keycode);

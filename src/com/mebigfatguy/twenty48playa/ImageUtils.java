@@ -66,11 +66,15 @@ public class ImageUtils {
 		return state;
 	}
 	
-	public BufferedImage getScreenBuffer() throws AWTException {
+	public Rectangle getScreenBounds() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		return getScreenBuffer(gc.getBounds());
+		return gc.getBounds();
+	}
+	
+	public BufferedImage getScreenBuffer() throws AWTException {
+		return getScreenBuffer(getScreenBounds());
 	}
 	
 	public BufferedImage getScreenBuffer(Rectangle bounds) throws AWTException {
@@ -102,32 +106,43 @@ public class ImageUtils {
 		return dstImage;
 	}
 	
-	public Point findFirstVerticalDifference(BufferedImage image1, BufferedImage image2, int diffLen) {
-		Raster r1 = image1.getRaster();
-		Raster r2 = image2.getRaster();
+	public Rectangle findBlackInset(BufferedImage image) {
+		Raster r = image.getRaster();
 		
-		int height = image1.getHeight();
-		int width = image1.getWidth();
-		int[] data1 = new int[width];
-		int[] data2 = new int[width];
+		Point topLeft = null;
+		Point bottomRight = null;
 		
-		for (int y = 0; y < height; y++) {
-			r1.getPixels(0, y, width, 1, data1);
-			r2.getPixels(0, y, width, 1, data2);
+		int width = image.getWidth();
+		int height = image.getHeight();
+		
+		int[] data = new int[width];
+		
+		y: for (int y = 0; y < height; y++) {
+			r.getPixels(0, y, width, 1, data);
 			
-			int runDiff = 0;;
 			for (int x = 0; x < width; x++) {
-				if (data1[x] == data2[x]) {
-					runDiff = 0;
-				} else {
-					runDiff++;
-					if (runDiff >= diffLen)
-						return new Point(x, y);
+				if (data[x] != SquareType.BLACK.ordinal()) {
+					topLeft = new Point(x, y);
+					break y;
 				}
 			}
 		}
 		
-		return null;
+		y: for (int y = height - 1; y >= 0; y--) {
+			r.getPixels(0, y, width, 1, data);
+			
+			for (int x = width - 1; x >= 0; x--) {
+				if (data[x] != SquareType.BLACK.ordinal()) {
+					bottomRight = new Point(x, y);
+					break y;
+				}
+			}
+		}
+		
+		if ((topLeft == null) || (bottomRight == null)) 
+			return null;
+		
+		return new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x + 1, bottomRight.y - topLeft.y + 1);
 	}
 	
 	private void findBoardCoordinates() throws AWTException {
@@ -208,7 +223,7 @@ public class ImageUtils {
 				maxIndex = i;
 			}
 		}
-		
+
 		return SquareType.values()[maxIndex];
 	}
 
@@ -216,9 +231,7 @@ public class ImageUtils {
 		try {
 			ImageIO.write(image,  "png",  new File(debugDir, fileName));
 		} catch (IOException ioe) {
-			LOGGER.error("Failed writing image to file {}", fileName, ioe);
+			LOGGER.error("Failed writing image to file {}", fileName + ".png", ioe);
 		}
 	}
-
-
 }

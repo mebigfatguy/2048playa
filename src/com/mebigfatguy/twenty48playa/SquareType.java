@@ -61,14 +61,13 @@ public enum SquareType {
 			
 			Properties p = new Properties();
 			p.load(bis);
-			int index = 0;
 			for (SquareType ct : SquareType.values()) {
 				String clr = p.getProperty(ct.name());
 				Color color = Color.decode(clr);
+				int index = ct.ordinal();
 				r[index] = (byte) color.getRed();
 				g[index] = (byte) color.getGreen();
 				b[index] = (byte) color.getBlue();
-				index++;
 			}
 			
 			COLOR_MODEL = new IndexColorModel(8, numColors, r, g, b);
