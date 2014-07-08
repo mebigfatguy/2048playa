@@ -103,8 +103,10 @@ public class WindowManager {
 		robot.keyPress(keycode);
 		robot.delay(10);
 		robot.keyRelease(keycode);
-		robot.delay(1000);
-		
+	}
+	
+	public void delay(int millis) {
+		robot.delay(millis);
 	}
 
 	public void clickContinue() {

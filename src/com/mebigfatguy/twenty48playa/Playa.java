@@ -46,6 +46,8 @@ public class Playa {
 		oldBoard = new SquareType[4][4];
 		boolean done = false;
 		boolean seen2048 = false;
+		
+		openingGambit();
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
@@ -64,6 +66,17 @@ public class Playa {
 			}
 			
 		} while (!done);
+	}
+
+	private void openingGambit() {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 5; j++) {
+				windowManager.key(KeyEvent.VK_UP);
+			}
+			
+			windowManager.key(KeyEvent.VK_LEFT);
+			windowManager.key(KeyEvent.VK_RIGHT);
+		}
 	}
 
 	MoveOption getBestDirection(MoveOption origOption, int depth) {
@@ -160,6 +173,7 @@ public class Playa {
 				windowManager.key(KeyEvent.VK_DOWN);
 			break;
 		}	
+		windowManager.delay(500);
 	}
 	
 	Pair<SquareType[][], Integer> simulateUp(SquareType[][] board) {
