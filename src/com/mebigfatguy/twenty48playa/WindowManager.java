@@ -108,12 +108,10 @@ public class WindowManager {
 	}
 
 	public void clickContinue() {
-		robot.delay(2500);
+		robot.delay(3000);
 		
 		Rectangle bounds = imageUtils.getBoardCoordinates();
-		
 		click(new Point(bounds.x + (bounds.width/3), bounds.y + (bounds.height/2)));
-
-		robot.delay(2500);
+		robot.delay(3000);
 	}
 }
