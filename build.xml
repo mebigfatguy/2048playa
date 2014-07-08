@@ -1,0 +1,87 @@
+<project name="2048playa" default="info" basedir="." xmlns:yank="antlib:com.mebigfatguy.yank">
+    
+    <property file="user.properties" />
+    <property file="build.properties" />
+    <property file="version.properties" />
+    
+    <property name="src.dir" value="${basedir}/src" />
+	<property name="target.dir" value="${basedir}/target" />
+    <property name="classes.dir" value="${target.dir}/classes" />
+    <property name="lib.dir" value="${basedir}/lib" />
+    <property name="javac.source" value="1.7" />
+    <property name="javac.target" value="1.7" />
+    <property name="javac.deprecation" value="on" />
+    <property name="javac.debug" value="on" />
+    <property name="proxy.server" value="" />
+    <property name="2048playa.version" value="0.1.0" />
+
+    <path id="2048playa.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar"/>
+        <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
+        <pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
+    </path>
+        
+    <target name="info">
+    	<echo message="2048playa - an autonomous '2048' player"/>
+    	<echo message=""/>
+    	<echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
+    	<echo message="    download yank.jar and place in ant/lib directory"/>
+    	<echo message="    http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.mebigfatguy.yank%22"/>
+    </target>
+	
+   <target name="yank" unless="no.yank">
+        <mkdir dir="${lib.dir}"/>
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true" separateClassifierTypes="true">
+        	<server url="http://jcenter.bintray.com"/>
+            <generateVersions propertyFileName="${basedir}/version.properties" />
+        </yank:yank>
+    </target>
+
+    <target name="init" depends="yank">
+        <mkdir dir="${classes.dir}"/>
+    </target>
+        
+    <target name="clean">
+        <delete dir="${target.dir}"/>
+    </target>
+        
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="${javac.source}" target="${javac.target}" deprecation="${javac.deprecation}" debug="${javac.debug}" includeantruntime="false">
+            <classpath refid="2048playa.classpath" />
+        </javac>
+    	<copy todir="${classes.dir}">
+    		<fileset dir="${resources.dir}"/>
+    	</copy>
+    </target>
+    
+    <target name="jar" depends="init,compile">
+        <jar destfile="${target.dir}/2048playa-${2048playa.version}.jar">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class" />
+                <include name="**/*.properties" />
+                <include name="**/*.png" />
+            </fileset>
+            <manifest>
+                <attribute name="2048playa-version" value="${2048playa.version}" />
+                <attribute name="Main-Class" value="com.mebigfatguy.twenty48playa.Twenty48playa" />
+                <attribute name="Application-Name" value="2048playa" />
+                <attribute name="Permissions" value="all-permissions" />
+                <attribute name="Codebase" value="*" />
+                <attribute name="Bundle-ManifestVersion" value="2" />
+                <attribute name="Bundle-Name" value="2048playa" />
+                <attribute name="Bundle-SymbolicName" value="2048playa; singleton:=true" />
+                <attribute name="Bundle-Version" value="${2048playa.version}" />
+                <attribute name="Bundle-ClassPath" value="." />
+                <attribute name="Bundle-Vendor" value="2048playa Project" />
+                <attribute name="Bundle-ActivationPolicy" value="lazy" />
+                <attribute name="Export-Package" value="com.mebigfatguy.twenty48playa" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run" depends="jar">
+        <java classname="com.mebigfatguy.twenty48playa.Twenty48Playa" fork="true" classpathref="2048playa.classpath"/>
+    </target>
+    
+</project>
