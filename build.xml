@@ -51,7 +51,10 @@
             <classpath refid="2048playa.classpath" />
         </javac>
     	<copy todir="${classes.dir}">
-    		<fileset dir="${resources.dir}"/>
+    		<fileset dir="${src.dir}">
+    			<include name="**/*.properties"/>
+                <include name="**/*.png" />
+    		</fileset>
     	</copy>
     </target>
     
