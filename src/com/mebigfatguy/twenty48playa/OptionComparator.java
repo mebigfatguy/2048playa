@@ -31,7 +31,7 @@ public class OptionComparator implements Comparator<MoveOption> {
 		if (dir1 == Direction.RIGHT)
 			dir1 = Direction.LEFT;
 		if (dir2 == Direction.RIGHT)
-			dir2 = Direction.RIGHT;
+			dir2 = Direction.LEFT;
 		return dir1.ordinal() - dir2.ordinal();
 	}
 
