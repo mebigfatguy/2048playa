@@ -73,14 +73,15 @@ public class Playa {
 
 	private void openingGambit() throws AWTException {
 		SquareType[][] board = imageUtils.getBoardState();
-		if (fillCount(board) < 4)
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 5; j++) {
-				windowManager.key(KeyEvent.VK_UP);
+		while (fillCount(board) < 6) {
+			for (int i = 0; i < 10; i++) {
+				for (int j = 0; j < 5; j++) {
+					windowManager.key(KeyEvent.VK_UP);
+				}
+				
+				windowManager.key(KeyEvent.VK_LEFT);
+				windowManager.key(KeyEvent.VK_RIGHT);
 			}
-			
-			windowManager.key(KeyEvent.VK_LEFT);
-			windowManager.key(KeyEvent.VK_RIGHT);
 		}
 	}
 
