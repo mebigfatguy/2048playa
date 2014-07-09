@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,12 @@ public class Playa {
 	private ImageUtils imageUtils;
 	private WindowManager windowManager;
 	private SquareType[][] oldBoard;
+	private Random random;
 	
 	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
 		windowManager = wm;
+		random = new Random(System.currentTimeMillis());
 	}
 	
 	public void playGame() throws AWTException {
@@ -51,7 +54,7 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			int recursion =  fillCount(board) - 13;
+			int recursion = fillCount(board) - 13;
 			recursion = Math.max(0, recursion);
 			
 			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  recursion);
@@ -68,7 +71,9 @@ public class Playa {
 		} while (!done);
 	}
 
-	private void openingGambit() {
+	private void openingGambit() throws AWTException {
+		SquareType[][] board = imageUtils.getBoardState();
+		if (fillCount(board) < 4)
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 5; j++) {
 				windowManager.key(KeyEvent.VK_UP);
@@ -118,6 +123,15 @@ public class Playa {
 		}
 		
 		Collections.sort(options, OPTION_COMPARATOR);
+		
+		if (options.size() > 1) {
+			MoveOption op1 = options.get(0);
+			MoveOption op2 = options.get(1);
+			
+			if ((op1.getScore() == op2.getScore()) && (op1.getDirection() == Direction.LEFT) && (op2.getDirection() == Direction.RIGHT)) {
+				return random.nextBoolean() ? op1 : op2;
+			}
+		}
 		return options.get(0);
 	}
 
