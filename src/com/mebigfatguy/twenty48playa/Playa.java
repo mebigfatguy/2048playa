@@ -82,6 +82,7 @@ public class Playa {
 				windowManager.key(KeyEvent.VK_LEFT);
 				windowManager.key(KeyEvent.VK_RIGHT);
 			}
+			board = imageUtils.getBoardState();
 		}
 	}
 
