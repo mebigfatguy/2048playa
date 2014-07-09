@@ -1,0 +1,9 @@
+<Project projectName="2048playa">
+  <Jar>./target/classes</Jar>
+  <AuxClasspathEntry>./lib/hamcrest-core.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/junit-4.11.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-classic-1.1.2.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-core-1.1.2.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/slf4j-api-1.7.7.jar</AuxClasspathEntry>
+  <SrcDir>./src</SrcDir>
+</Project>
