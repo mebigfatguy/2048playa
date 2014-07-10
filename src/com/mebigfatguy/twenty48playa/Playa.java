@@ -96,6 +96,7 @@ public class Playa {
 		
 		Pair<SquareType[][], Integer> upSim = simulateUp(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(), upSim.getKey())) {
+			embellishSimulation(upSim.getKey());
 			MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, origOption.getScore() + (double) upSim.getValue() / (depth + 1), upSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
 		}
@@ -103,6 +104,7 @@ public class Playa {
 		if (fillCount(origOption.getResultantBoard()) > 14) {
 			Pair<SquareType[][], Integer> downSim = simulateDown(origOption.getResultantBoard());
 			if (!Arrays.deepEquals(origOption.getResultantBoard(), downSim.getKey())) {
+				embellishSimulation(upSim.getKey());
 				MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, origOption.getScore() + (double) downSim.getValue() / (depth + 1), downSim.getKey()), depth + 1);
 				options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
 			}
@@ -110,12 +112,14 @@ public class Playa {
 		
 		Pair<SquareType[][], Integer> leftSim = simulateLeft(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(),  leftSim.getKey())) {
+			embellishSimulation(upSim.getKey());
 			MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, origOption.getScore() + (double) leftSim.getValue() / (depth + 1), leftSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
 		}
 		
 		Pair<SquareType[][], Integer> rightSim = simulateRight(origOption.getResultantBoard());
 		if (!Arrays.deepEquals(origOption.getResultantBoard(), rightSim.getKey())) {
+			embellishSimulation(upSim.getKey());
 			MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, origOption.getScore() + (double) rightSim.getValue() / (depth + 1), rightSim.getKey()), depth + 1);
 			options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
 		}
@@ -135,6 +139,23 @@ public class Playa {
 			}
 		}
 		return options.get(0);
+	}
+
+	private void embellishSimulation(SquareType[][] board) {
+		int freeSpace = 16 - fillCount(board);
+		if (freeSpace > 0) {
+			
+			random.nextInt(freeSpace);
+			for (int y = 0; y < 4; y++) {
+				for (int x = 0; x < 4; x++) {
+					if ((freeSpace == 0) && (board[x][y] == SquareType.BLANK)) {
+						board[x][y] = SquareType.STUB;
+						return;
+					}
+					freeSpace--;
+				}
+			}
+		}
 	}
 
 	private boolean has2048(SquareType[][] board) {
@@ -216,7 +237,7 @@ public class Playa {
 							srcY = y;
 						}
 					} else {
-						if (srcYType != SquareType.BLANK) {
+						if ((srcYType != SquareType.BLANK) && (srcYType != SquareType.STUB)) {
 							if (srcYType == yType) {
 								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
 								score += Math.pow(2, (srcYType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
@@ -262,7 +283,7 @@ public class Playa {
 							srcY = y;
 						}
 					} else {
-						if (srcYType != SquareType.BLANK) {
+						if ((srcYType != SquareType.BLANK) && (srcYType != SquareType.STUB)) {
 							if (srcYType == yType) {
 								simBoard[x][y] = SquareType.values()[srcYType.ordinal() + 1];
 								score += Math.pow(2, (srcYType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
@@ -308,7 +329,7 @@ public class Playa {
 							srcX = x;
 						}
 					} else {
-						if (srcXType != SquareType.BLANK) {
+						if ((srcXType != SquareType.BLANK) && (srcXType != SquareType.STUB)) {
 							if (srcXType == xType) {
 								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
 								score += Math.pow(2, (srcXType.ordinal()+1) - SquareType.TWO.ordinal() + 1);
@@ -354,7 +375,7 @@ public class Playa {
 							srcX = x;
 						}
 					} else {
-						if (srcXType != SquareType.BLANK) {
+						if ((srcXType != SquareType.BLANK) && (srcXType != SquareType.STUB)) {
 							if (srcXType == xType) {
 								simBoard[x][y] = SquareType.values()[srcXType.ordinal() + 1];
 								score += Math.pow(2, (srcXType.ordinal()+1) - SquareType.TWO.ordinal() + 1);

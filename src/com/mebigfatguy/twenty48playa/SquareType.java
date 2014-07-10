@@ -33,6 +33,7 @@ public enum SquareType {
 	NUMBER,
 	WHITE,
 	BLACK,
+	STUB,
 	TWO,
 	FOUR,
 	EIGHT,
