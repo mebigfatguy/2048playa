@@ -73,7 +73,10 @@ public class Playa {
 
 	private void openingGambit() throws AWTException {
 		SquareType[][] board = imageUtils.getBoardState();
+		SquareType[][] oldBoard = new SquareType[4][4];
+		
 		while (fillCount(board) < 6) {
+			copyBoard(board, oldBoard);
 			for (int i = 0; i < 10; i++) {
 				for (int j = 0; j < 5; j++) {
 					windowManager.key(KeyEvent.VK_UP);
@@ -83,6 +86,9 @@ public class Playa {
 				windowManager.key(KeyEvent.VK_RIGHT);
 			}
 			board = imageUtils.getBoardState();
+			
+			if (Arrays.deepEquals(oldBoard,  board))
+				break;
 		}
 	}
 
