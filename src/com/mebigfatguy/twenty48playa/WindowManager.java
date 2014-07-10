@@ -69,7 +69,6 @@ public class WindowManager {
 			robot.delay(2500);
 			if (firstTime) {
 				BufferedImage image = imageUtils.getScreenBuffer();
-				imageUtils.writeImage(image,  "screen");
 				
 				Rectangle browserBounds = imageUtils.findBlackInset(image);
 				
