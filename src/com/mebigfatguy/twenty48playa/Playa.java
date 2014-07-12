@@ -219,6 +219,9 @@ public class Playa {
 			case DOWN:
 				windowManager.key(KeyEvent.VK_DOWN);
 			break;
+			
+			default:
+			break;
 		}	
 		windowManager.delay(500);
 	}
