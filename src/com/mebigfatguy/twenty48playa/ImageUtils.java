@@ -205,7 +205,8 @@ public class ImageUtils {
 	}
 	
 	private SquareType getMajorColor(BufferedImage image) {
-		int[] counts = new int[SquareType.values().length];
+		SquareType[] values = SquareType.values();
+		int[] counts = new int[values.length];
 		
 		Raster r = image.getRaster();
 		int width = image.getWidth();
@@ -229,7 +230,7 @@ public class ImageUtils {
 			}
 		}
 
-		return SquareType.values()[maxIndex];
+		return values[maxIndex];
 	}
 
 	public void writeImage(BufferedImage image, String fileName) {
