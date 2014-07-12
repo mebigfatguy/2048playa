@@ -31,7 +31,7 @@ public class Playa {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
 	private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
-	private static final int RECURSION_DEPTH = 6;
+	private static final int RECURSION_DEPTH = 5;
 	
 	private ImageUtils imageUtils;
 	private WindowManager windowManager;
