@@ -54,7 +54,7 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			int free = 16 - fillCount(board) + 1;
+			int free = 16 - fillCount(board) + 2;
 			int recursion = Math.min(RECURSION_DEPTH, free);
 			
 			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  recursion);
