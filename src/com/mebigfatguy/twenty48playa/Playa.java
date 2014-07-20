@@ -54,8 +54,8 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			int free = 16 - fillCount(board) + 2;
-			int recursion = Math.min(RECURSION_DEPTH, free);
+			int free = 16 - fillCount(board);
+			int recursion = Math.min(RECURSION_DEPTH, free + 2);
 			
 			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  recursion);
 			collide(bestOption.getDirection());
@@ -108,7 +108,7 @@ public class Playa {
 			options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
 		}
 		
-		if (fillCount(origOption.getResultantBoard()) > 14) {
+		if (fillCount(origOption.getResultantBoard()) > 12) {
 			Pair<SquareType[][], Integer> downSim = simulateDown(origOption.getResultantBoard());
 			if (!Arrays.deepEquals(origOption.getResultantBoard(), downSim.getKey())) {
 				double weightedScore = origOption.getScore() + (downSim.getValue() * depth) / RECURSION_DEPTH;
