@@ -108,7 +108,7 @@ public class Playa {
 			options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
 		}
 		
-		if (fillCount(origOption.getResultantBoard()) > 12) {
+		if (fillCount(origOption.getResultantBoard()) > 10) {
 			Pair<SquareType[][], Integer> downSim = simulateDown(origOption.getResultantBoard());
 			if (!Arrays.deepEquals(origOption.getResultantBoard(), downSim.getKey())) {
 				double weightedScore = origOption.getScore() + (downSim.getValue() * depth) / RECURSION_DEPTH;
