@@ -230,6 +230,7 @@ public class Playa {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		int score = 0;
+		int preFillCount = fillCount(simBoard);
 		
 		for (int x = 0; x < 4; x++) {
 			for (int y = 0; y < 3; y++) {
@@ -268,6 +269,12 @@ public class Playa {
 				}
 			}
 		}
+		if (preFillCount == 16) {
+			int postFillCount = fillCount(simBoard);
+			if (postFillCount == 16) {
+				score = Integer.MIN_VALUE;
+			}
+		}
 		
 		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
@@ -276,6 +283,7 @@ public class Playa {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		int score = 0;
+		int preFillCount = fillCount(simBoard);
 		
 		for (int x = 0; x < 4; x++) {
 			for (int y = 3; y > 0; y--) {
@@ -314,6 +322,12 @@ public class Playa {
 				}
 			}
 		}
+		if (preFillCount == 16) {
+			int postFillCount = fillCount(simBoard);
+			if (postFillCount == 16) {
+				score = Integer.MIN_VALUE;
+			}
+		}
 		
 		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
@@ -322,6 +336,7 @@ public class Playa {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		int score = 0;
+		int preFillCount = fillCount(simBoard);
 		
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 3; x++) {
@@ -360,6 +375,12 @@ public class Playa {
 				}
 			}
 		}
+		if (preFillCount == 16) {
+			int postFillCount = fillCount(simBoard);
+			if (postFillCount == 16) {
+				score = Integer.MIN_VALUE;
+			}
+		}
 		
 		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
@@ -368,6 +389,7 @@ public class Playa {
 		SquareType[][] simBoard = new SquareType[4][4];
 		copyBoard(board, simBoard);
 		int score = 0;
+		int preFillCount = fillCount(simBoard);
 		
 		for (int y = 0; y < 4; y++) {
 			for (int x = 3; x > 0; x--) {
@@ -404,6 +426,12 @@ public class Playa {
 						}
 					}
 				}
+			}
+		}
+		if (preFillCount == 16) {
+			int postFillCount = fillCount(simBoard);
+			if (postFillCount == 16) {
+				score = Integer.MIN_VALUE;
 			}
 		}
 		
