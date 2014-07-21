@@ -32,7 +32,7 @@
 	
    <target name="yank" unless="no.yank">
         <mkdir dir="${lib.dir}"/>
-        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true" separateClassifierTypes="true">
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
         	<server url="http://jcenter.bintray.com"/>
             <generateVersions propertyFileName="${basedir}/version.properties" />
         </yank:yank>
