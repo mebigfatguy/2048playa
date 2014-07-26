@@ -50,11 +50,11 @@ public class ImageUtils {
 		debugDir.mkdirs();
 	}
 	
-	public void initialize() throws AWTException {
+	public void initialize() {
 		findBoardCoordinates();
 	}
 	
-	public SquareType[][] getBoardState() throws AWTException {
+	public SquareType[][] getBoardState() {
 		SquareType[][] state = new SquareType[4][4];
 		BufferedImage image = getScreenBuffer(boardCoordinates);
 		for (int y = 0; y < 4; y++) {
@@ -78,15 +78,15 @@ public class ImageUtils {
 		return gc.getBounds();
 	}
 	
-	public BufferedImage getScreenBuffer() throws AWTException {
+	public BufferedImage getScreenBuffer() {
 		return getScreenBuffer(getScreenBounds());
 	}
 	
-	public BufferedImage getScreenBuffer(Rectangle bounds) throws AWTException {
+	public BufferedImage getScreenBuffer(Rectangle bounds) {
 		return to8Bit(robot.createScreenCapture(bounds));
 	}
 	
-	public BufferedImage getImageBuffer(BufferedImage srcImage, Rectangle bounds) throws AWTException {
+	public BufferedImage getImageBuffer(BufferedImage srcImage, Rectangle bounds) {
 		BufferedImage dstImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_BYTE_INDEXED, SquareType.getColorModel());
 		Graphics graphix = dstImage.getGraphics();
 		try {
@@ -150,7 +150,7 @@ public class ImageUtils {
 		return new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x + 1, bottomRight.y - topLeft.y + 1);
 	}
 	
-	private void findBoardCoordinates() throws AWTException {
+	private void findBoardCoordinates() {
 		BufferedImage image = getScreenBuffer();
 		
 		Point center = new Point(image.getWidth() / 2, image.getHeight() / 2);
@@ -172,7 +172,7 @@ public class ImageUtils {
 	}
 	
 
-	private Rectangle findSquareCoordinates(BufferedImage image, int x, int y) {
+	private static Rectangle findSquareCoordinates(BufferedImage image, int x, int y) {
 		
 		int startX = ((x * 4 + 1) * image.getWidth()) / 16;
 		int startY = ((y * 4 + 1) * image.getHeight()) / 16;
@@ -187,7 +187,7 @@ public class ImageUtils {
 		return new Rectangle(left, top, right - left, bottom - top);
 	}
 
-	private Point findColor(BufferedImage image, int startX, int startY, int dirX, int dirY, int colorIndex) {
+	private static Point findColor(BufferedImage image, int startX, int startY, int dirX, int dirY, int colorIndex) {
 		
 		int curX = startX;
 		int curY = startY;
@@ -204,7 +204,7 @@ public class ImageUtils {
 		} while (true);
 	}
 	
-	private SquareType getMajorColor(BufferedImage image) {
+	private static SquareType getMajorColor(BufferedImage image) {
 		SquareType[] values = SquareType.values();
 		int[] counts = new int[values.length];
 		

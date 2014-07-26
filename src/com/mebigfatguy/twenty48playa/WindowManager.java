@@ -46,7 +46,7 @@ public class WindowManager {
 		robot = new Robot();
 	}
 	
-	public void launch2048(boolean firstTime) throws URISyntaxException, IOException, AWTException {
+	public void launch2048(boolean firstTime) throws URISyntaxException, IOException {
 		
 		JWindow blackWindow = null;
 		try {

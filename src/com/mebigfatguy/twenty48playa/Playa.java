@@ -16,7 +16,6 @@
  */
 package com.mebigfatguy.twenty48playa;
 
-import java.awt.AWTException;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class Playa {
 		random = new Random(System.currentTimeMillis());
 	}
 	
-	public void playGame() throws AWTException {
+	public void playGame() {
 		
 		oldBoard = new SquareType[4][4];
 		boolean done = false;
@@ -71,7 +70,7 @@ public class Playa {
 		} while (!done);
 	}
 
-	private void openingGambit() throws AWTException {
+	private void openingGambit() {
 		SquareType[][] board = imageUtils.getBoardState();
 		SquareType[][] oldBoard = new SquareType[4][4];
 		
@@ -168,7 +167,7 @@ public class Playa {
 		}
 	}
 
-	private boolean has2048(SquareType[][] board) {
+	private static boolean has2048(SquareType[][] board) {
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {
 				if (board[x][y] == SquareType.TWENTYFOURTYEIGHT) {
@@ -180,7 +179,7 @@ public class Playa {
 		return false;
 	}
 	
-	private int fillCount(SquareType[][] board) {
+	private static int fillCount(SquareType[][] board) {
 		int count = 0;
 		
 		for (int y = 0; y < 4; y++) {
@@ -438,7 +437,7 @@ public class Playa {
 		return new Pair<SquareType[][], Integer>(simBoard, Integer.valueOf(score));
 	}
 	
-	private void copyBoard(SquareType[][] srcBoard, SquareType[][] dstBoard) {
+	private static void copyBoard(SquareType[][] srcBoard, SquareType[][] dstBoard) {
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {
 				dstBoard[x][y] = srcBoard[x][y];
