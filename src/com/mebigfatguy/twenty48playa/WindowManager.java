@@ -38,8 +38,8 @@ public class WindowManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WindowManager.class);
 	
-	private ImageUtils imageUtils;
-	private Robot robot;
+	private final ImageUtils imageUtils;
+	private final Robot robot;
 	
 	public WindowManager(ImageUtils iu) throws AWTException{
 		imageUtils = iu;
@@ -54,6 +54,8 @@ public class WindowManager {
 			
 			if (firstTime) {
 				blackWindow = new JWindow() {
+					private static final long serialVersionUID = -9148401691937086414L;
+
 					@Override
 					public void paint(Graphics g) {
 					}
