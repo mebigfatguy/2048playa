@@ -32,10 +32,10 @@ public class Playa {
 	private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
 	private static final int RECURSION_DEPTH = 5;
 	
-	private ImageUtils imageUtils;
-	private WindowManager windowManager;
+	private final ImageUtils imageUtils;
+	private final WindowManager windowManager;
 	private SquareType[][] oldBoard;
-	private Random random;
+	private final Random random;
 	
 	public Playa(ImageUtils iu, WindowManager wm) {
 		imageUtils = iu;
@@ -53,10 +53,7 @@ public class Playa {
 		do {
 			SquareType[][] board = imageUtils.getBoardState();
 			
-			int free = 16 - fillCount(board);
-			int recursion = Math.min(RECURSION_DEPTH, free + 2);
-			
-			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  recursion);
+			MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board),  RECURSION_DEPTH);
 			collide(bestOption.getDirection());
 
 			if (finished(board))
