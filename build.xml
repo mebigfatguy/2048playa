@@ -65,7 +65,7 @@
 		</copy>
 	</target>
 
-	<target name="jar" depends="init,compile">
+	<target name="jar" depends="init,compile" description="build the 2048playa.jar">
 		<jar destfile="${target.dir}/2048playa-${2048playa.version}.jar">
 			<fileset dir="${classes.dir}">
 				<include name="**/*.class" />
@@ -90,7 +90,7 @@
 		</jar>
 	</target>
 
-	<target name="run" depends="jar">
+	<target name="run" depends="jar" description="run 2048playa">
 		<java classname="com.mebigfatguy.twenty48playa.Twenty48Playa" fork="true" classpathref="2048playa.classpath" />
 	</target>
 
