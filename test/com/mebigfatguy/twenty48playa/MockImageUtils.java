@@ -36,7 +36,7 @@ public class MockImageUtils extends ImageUtils {
 		int i = 0;
 		for (int y = 0; y < 4; y++) {
 			for (int x = 0; x < 4; x++) {
-				board[x][y] = SquareType.valueOf(SquareType.class, numbers[i++]);
+				board[x][y] = Enum.valueOf(SquareType.class, numbers[i++]);
 			}
 		}
 	}
