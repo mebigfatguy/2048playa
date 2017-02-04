@@ -152,7 +152,7 @@ public class Playa {
         int freeSpace = 16 - board.fillCount();
         if (freeSpace > 0) {
 
-            random.nextInt(freeSpace);
+            freeSpace = random.nextInt(freeSpace);
             for (int y = 0; y < 4; y++) {
                 for (int x = 0; x < 4; x++) {
                     if ((freeSpace == 0) && (board.isBlank(x, y))) {
