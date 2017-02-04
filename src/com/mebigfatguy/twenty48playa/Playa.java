@@ -69,7 +69,7 @@ public class Playa {
 
     private void openingGambit() {
         Board board = imageUtils.getBoardState();
-        Board oldBoard = new Board();
+        oldBoard = new Board();
 
         while (board.fillCount() < 6) {
             oldBoard = board.clone();
