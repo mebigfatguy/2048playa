@@ -169,7 +169,7 @@ public class Playa {
 
         boolean finished = board.equals(oldBoard);
 
-        board = oldBoard.clone();
+        oldBoard = board.clone();
         return finished;
     }
 
