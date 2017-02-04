@@ -68,7 +68,7 @@ public class WindowManager {
 			Desktop dt = Desktop.getDesktop();
 			dt.browse(new URI("http://gabrielecirulli.github.io/2048/"));
 			
-			robot.delay(3000);
+			robot.delay(5000);
 			if (firstTime) {
 				BufferedImage image = imageUtils.getScreenBuffer();
 				
