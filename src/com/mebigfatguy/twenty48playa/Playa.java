@@ -59,7 +59,7 @@ public class Playa {
                 return;
             }
 
-            if (!seen2048 && has2048(board)) {
+            if (!seen2048 && board.has2048()) {
                 seen2048 = true;
                 windowManager.clickContinue();
             }
@@ -163,18 +163,6 @@ public class Playa {
                 }
             }
         }
-    }
-
-    private static boolean has2048(Board board) {
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 4; x++) {
-                if (board.is2048(x, y)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private boolean finished(Board board) {

@@ -60,6 +60,18 @@ public class Board implements Cloneable {
         return squares[x][y] == SquareType.TWENTYFOURTYEIGHT;
     }
 
+    public boolean has2048() {
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                if (is2048(x, y)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public int fillCount() {
         int count = 0;
 
