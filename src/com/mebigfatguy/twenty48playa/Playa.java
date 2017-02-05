@@ -101,7 +101,7 @@ public class Playa {
         Pair<Board, Integer> upSim = Simulator.simulateUp(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(upSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) upSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            if (embellishSimulation(upSim.getKey())) {
+            if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, weightedScore, upSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
             } else {
@@ -113,7 +113,7 @@ public class Playa {
             Pair<Board, Integer> downSim = Simulator.simulateDown(origOption.getResultantBoard());
             if (!origOption.getResultantBoard().equals(downSim.getKey())) {
                 double weightedScore = origOption.getScore() + (((double) downSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-                if (embellishSimulation(upSim.getKey())) {
+                if (Simulator.embellishSimulation(upSim.getKey())) {
                     MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
                     options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
                 } else {
@@ -125,7 +125,7 @@ public class Playa {
         Pair<Board, Integer> leftSim = Simulator.simulateLeft(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(leftSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) leftSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            if (embellishSimulation(upSim.getKey())) {
+            if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, weightedScore, leftSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
             } else {
@@ -136,7 +136,7 @@ public class Playa {
         Pair<Board, Integer> rightSim = Simulator.simulateRight(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(rightSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) rightSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            if (embellishSimulation(upSim.getKey())) {
+            if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, weightedScore, rightSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
             } else {
@@ -154,32 +154,11 @@ public class Playa {
             MoveOption op1 = options.get(0);
             MoveOption op2 = options.get(1);
 
-            if ((op1.getScore() == op2.getScore()) && (op1.getDirection() == Direction.LEFT) && (op2.getDirection() == Direction.RIGHT)) {
+            if (((op1.getScore() == op2.getScore()) && (op1.getDirection() == Direction.LEFT)) && (op2.getDirection() == Direction.RIGHT)) {
                 return random.nextBoolean() ? op1 : op2;
             }
         }
         return options.get(0);
-    }
-
-    private boolean embellishSimulation(Board board) {
-        int freeSpace = 16 - board.fillCount();
-        if (freeSpace <= 0) {
-            return false;
-        }
-
-        freeSpace = random.nextInt(freeSpace);
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 4; x++) {
-                if (board.isBlank(x, y)) {
-                    if (freeSpace == 0) {
-                        board.set(x, y, SquareType.STUB);
-                        return true;
-                    }
-                    freeSpace--;
-                }
-            }
-        }
-        return false;
     }
 
     private boolean finished(Board board) {

@@ -16,7 +16,14 @@
  */
 package com.mebigfatguy.twenty48playa;
 
-public class Simulator {
+import java.util.Random;
+
+public final class Simulator {
+
+    private static Random random = new Random();
+
+    private Simulator() {
+    }
 
     public static Pair<Board, Integer> simulateUp(Board board) {
         Board simBoard = board.clone();
@@ -232,5 +239,26 @@ public class Simulator {
         }
 
         return new Pair<>(simBoard, Integer.valueOf(score));
+    }
+
+    public static boolean embellishSimulation(Board board) {
+        int freeSpace = 16 - board.fillCount();
+        if (freeSpace <= 0) {
+            return false;
+        }
+
+        freeSpace = random.nextInt(freeSpace);
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                if (board.isBlank(x, y)) {
+                    if (freeSpace == 0) {
+                        board.set(x, y, SquareType.STUB);
+                        return true;
+                    }
+                    freeSpace--;
+                }
+            }
+        }
+        return false;
     }
 }
