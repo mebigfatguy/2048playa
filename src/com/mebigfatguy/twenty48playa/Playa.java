@@ -155,11 +155,13 @@ public class Playa {
             freeSpace = random.nextInt(freeSpace);
             for (int y = 0; y < 4; y++) {
                 for (int x = 0; x < 4; x++) {
-                    if ((freeSpace == 0) && (board.isBlank(x, y))) {
-                        board.set(x, y, SquareType.STUB);
-                        return;
+                    if (board.isBlank(x, y)) {
+                        if (freeSpace == 0) {
+                            board.set(x, y, SquareType.STUB);
+                            return;
+                        }
+                        freeSpace--;
                     }
-                    freeSpace--;
                 }
             }
         }
