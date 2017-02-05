@@ -105,7 +105,7 @@ public class Playa {
                 MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, weightedScore, upSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
             } else {
-                options.add(new MoveOption(Direction.UP, weightedScore * TERMINATION_PENALTY, upSim.getKey()));
+                options.add(new MoveOption(Direction.UP, weightedScore * depth * TERMINATION_PENALTY, upSim.getKey()));
             }
         }
 
@@ -117,7 +117,7 @@ public class Playa {
                     MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
                     options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
                 } else {
-                    options.add(new MoveOption(Direction.DOWN, weightedScore * TERMINATION_PENALTY, downSim.getKey()));
+                    options.add(new MoveOption(Direction.DOWN, weightedScore * depth * TERMINATION_PENALTY, downSim.getKey()));
                 }
             }
         }
@@ -129,7 +129,7 @@ public class Playa {
                 MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, weightedScore, leftSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
             } else {
-                options.add(new MoveOption(Direction.LEFT, weightedScore * TERMINATION_PENALTY, leftSim.getKey()));
+                options.add(new MoveOption(Direction.LEFT, weightedScore * depth * TERMINATION_PENALTY, leftSim.getKey()));
             }
         }
 
@@ -140,7 +140,7 @@ public class Playa {
                 MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, weightedScore, rightSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
             } else {
-                options.add(new MoveOption(Direction.RIGHT, weightedScore * TERMINATION_PENALTY, rightSim.getKey()));
+                options.add(new MoveOption(Direction.RIGHT, weightedScore * depth * TERMINATION_PENALTY, rightSim.getKey()));
             }
         }
 
