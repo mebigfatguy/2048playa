@@ -30,6 +30,7 @@ public class Playa {
     private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
     private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
     private static final int RECURSION_DEPTH = 5;
+    private static final double TERMINATION_PENALTY = 0.9;
 
     private final ImageUtils imageUtils;
     private final WindowManager windowManager;
@@ -100,35 +101,47 @@ public class Playa {
         Pair<Board, Integer> upSim = Simulator.simulateUp(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(upSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) upSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            embellishSimulation(upSim.getKey());
-            MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, weightedScore, upSim.getKey()), depth - 1);
-            options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
+            if (embellishSimulation(upSim.getKey())) {
+                MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, weightedScore, upSim.getKey()), depth - 1);
+                options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
+            } else {
+                options.add(new MoveOption(Direction.UP, weightedScore * TERMINATION_PENALTY, upSim.getKey()));
+            }
         }
 
         if (origOption.getResultantBoard().fillCount() > 10) {
             Pair<Board, Integer> downSim = Simulator.simulateDown(origOption.getResultantBoard());
             if (!origOption.getResultantBoard().equals(downSim.getKey())) {
                 double weightedScore = origOption.getScore() + (((double) downSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-                embellishSimulation(upSim.getKey());
-                MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
-                options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
+                if (embellishSimulation(upSim.getKey())) {
+                    MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
+                    options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
+                } else {
+                    options.add(new MoveOption(Direction.DOWN, weightedScore * TERMINATION_PENALTY, downSim.getKey()));
+                }
             }
         }
 
         Pair<Board, Integer> leftSim = Simulator.simulateLeft(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(leftSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) leftSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            embellishSimulation(upSim.getKey());
-            MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, weightedScore, leftSim.getKey()), depth - 1);
-            options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
+            if (embellishSimulation(upSim.getKey())) {
+                MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, weightedScore, leftSim.getKey()), depth - 1);
+                options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
+            } else {
+                options.add(new MoveOption(Direction.LEFT, weightedScore * TERMINATION_PENALTY, leftSim.getKey()));
+            }
         }
 
         Pair<Board, Integer> rightSim = Simulator.simulateRight(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(rightSim.getKey())) {
             double weightedScore = origOption.getScore() + (((double) rightSim.getValue().intValue() * depth) / RECURSION_DEPTH);
-            embellishSimulation(upSim.getKey());
-            MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, weightedScore, rightSim.getKey()), depth - 1);
-            options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
+            if (embellishSimulation(upSim.getKey())) {
+                MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, weightedScore, rightSim.getKey()), depth - 1);
+                options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
+            } else {
+                options.add(new MoveOption(Direction.RIGHT, weightedScore * TERMINATION_PENALTY, rightSim.getKey()));
+            }
         }
 
         if (options.isEmpty()) {
@@ -148,23 +161,25 @@ public class Playa {
         return options.get(0);
     }
 
-    private void embellishSimulation(Board board) {
+    private boolean embellishSimulation(Board board) {
         int freeSpace = 16 - board.fillCount();
-        if (freeSpace > 0) {
+        if (freeSpace <= 0) {
+            return false;
+        }
 
-            freeSpace = random.nextInt(freeSpace);
-            for (int y = 0; y < 4; y++) {
-                for (int x = 0; x < 4; x++) {
-                    if (board.isBlank(x, y)) {
-                        if (freeSpace == 0) {
-                            board.set(x, y, SquareType.STUB);
-                            return;
-                        }
-                        freeSpace--;
+        freeSpace = random.nextInt(freeSpace);
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                if (board.isBlank(x, y)) {
+                    if (freeSpace == 0) {
+                        board.set(x, y, SquareType.STUB);
+                        return true;
                     }
+                    freeSpace--;
                 }
             }
         }
+        return false;
     }
 
     private boolean finished(Board board) {
