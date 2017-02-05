@@ -29,8 +29,9 @@ public class Playa {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
     private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
-    private static final int RECURSION_DEPTH = 5;
-    private static final double TERMINATION_PENALTY = 0.9;
+    private static final int RECURSION_DEPTH = 4;
+    private static final double TERMINATION_PENALTY = 0.5;
+    private static final double DOWN_PENALTY = 0.8;
 
     private final ImageUtils imageUtils;
     private final WindowManager windowManager;
@@ -114,10 +115,10 @@ public class Playa {
             if (!origOption.getResultantBoard().equals(downSim.getKey())) {
                 double weightedScore = origOption.getScore() + (((double) downSim.getValue().intValue() * depth) / RECURSION_DEPTH);
                 if (Simulator.embellishSimulation(upSim.getKey())) {
-                    MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
+                    MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore * DOWN_PENALTY, downSim.getKey()), depth - 1);
                     options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
                 } else {
-                    options.add(new MoveOption(Direction.DOWN, weightedScore * depth * TERMINATION_PENALTY, downSim.getKey()));
+                    options.add(new MoveOption(Direction.DOWN, weightedScore * depth * DOWN_PENALTY * TERMINATION_PENALTY, downSim.getKey()));
                 }
             }
         }
