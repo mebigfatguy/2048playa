@@ -100,7 +100,7 @@ public class Playa {
 
         Pair<Board, Double> upSim = Simulator.simulateUp(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(upSim.getKey())) {
-            double weightedScore = origOption.getScore() + ((upSim.getValue().doubleValue() * 2 * depth) / RECURSION_DEPTH);
+            double weightedScore = origOption.getScore() + ((upSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
             if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption upOption = getBestDirection(new MoveOption(Direction.UP, weightedScore, upSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.UP, upOption.getScore(), upSim.getKey()));
@@ -112,7 +112,7 @@ public class Playa {
         if (origOption.getResultantBoard().fillCount() > 10) {
             Pair<Board, Double> downSim = Simulator.simulateDown(origOption.getResultantBoard());
             if (!origOption.getResultantBoard().equals(downSim.getKey())) {
-                double weightedScore = origOption.getScore() + ((downSim.getValue().doubleValue() * 2 * depth) / RECURSION_DEPTH);
+                double weightedScore = origOption.getScore() + ((downSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
                 if (Simulator.embellishSimulation(upSim.getKey())) {
                     MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
                     options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
@@ -124,7 +124,7 @@ public class Playa {
 
         Pair<Board, Double> leftSim = Simulator.simulateLeft(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(leftSim.getKey())) {
-            double weightedScore = origOption.getScore() + ((leftSim.getValue().doubleValue() * 2 * depth) / RECURSION_DEPTH);
+            double weightedScore = origOption.getScore() + ((leftSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
             if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption leftOption = getBestDirection(new MoveOption(Direction.LEFT, weightedScore, leftSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.LEFT, leftOption.getScore(), leftSim.getKey()));
@@ -135,7 +135,7 @@ public class Playa {
 
         Pair<Board, Double> rightSim = Simulator.simulateRight(origOption.getResultantBoard());
         if (!origOption.getResultantBoard().equals(rightSim.getKey())) {
-            double weightedScore = origOption.getScore() + ((rightSim.getValue().doubleValue() * 2 * depth) / RECURSION_DEPTH);
+            double weightedScore = origOption.getScore() + ((rightSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
             if (Simulator.embellishSimulation(upSim.getKey())) {
                 MoveOption rightOption = getBestDirection(new MoveOption(Direction.RIGHT, weightedScore, rightSim.getKey()), depth - 1);
                 options.add(new MoveOption(Direction.RIGHT, rightOption.getScore(), rightSim.getKey()));
