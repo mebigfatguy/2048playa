@@ -122,16 +122,14 @@ public class Playa {
             }
         }
 
-        if (origOption.getResultantBoard().fillCount() > 10) {
-            Pair<Board, Double> downSim = Simulator.simulateDown(origOption.getResultantBoard());
-            if (!origOption.getResultantBoard().equals(downSim.getKey())) {
-                double weightedScore = origOption.getScore() + ((downSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
-                if (Simulator.embellishSimulation(downSim.getKey())) {
-                    MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
-                    options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
-                } else {
-                    options.add(new MoveOption(Direction.DOWN, weightedScore * depth * TERMINATION_PENALTY, downSim.getKey()));
-                }
+        Pair<Board, Double> downSim = Simulator.simulateDown(origOption.getResultantBoard());
+        if (!origOption.getResultantBoard().equals(downSim.getKey())) {
+            double weightedScore = origOption.getScore() + ((downSim.getValue().doubleValue() * depth) / RECURSION_DEPTH);
+            if (Simulator.embellishSimulation(downSim.getKey())) {
+                MoveOption downOption = getBestDirection(new MoveOption(Direction.DOWN, weightedScore, downSim.getKey()), depth - 1);
+                options.add(new MoveOption(Direction.DOWN, downOption.getScore(), downSim.getKey()));
+            } else {
+                options.add(new MoveOption(Direction.DOWN, weightedScore * depth * TERMINATION_PENALTY, downSim.getKey()));
             }
         }
 
