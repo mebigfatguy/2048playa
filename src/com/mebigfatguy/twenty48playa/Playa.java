@@ -29,7 +29,7 @@ public class Playa {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Playa.class);
     private static final OptionComparator OPTION_COMPARATOR = new OptionComparator();
-    private static final int RECURSION_DEPTH = 4;
+    private static final int RECURSION_DEPTH = 6;
     private static final double TERMINATION_PENALTY = 0.5;
 
     private final ImageUtils imageUtils;
@@ -53,7 +53,7 @@ public class Playa {
         do {
             Board board = imageUtils.getBoardState();
 
-            MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board), RECURSION_DEPTH);
+            MoveOption bestOption = getBestDirection(new MoveOption(Direction.DOWN, 0, board), limitRecursion(board));
             collide(bestOption.getDirection());
 
             if (finished(board)) {
@@ -66,6 +66,19 @@ public class Playa {
             }
 
         } while (!done);
+    }
+
+    private int limitRecursion(Board board) {
+        int fillSize = board.fillCount();
+        if (fillSize < 8) {
+            return RECURSION_DEPTH;
+        }
+
+        if (fillSize < 12) {
+            return RECURSION_DEPTH / 2;
+        }
+
+        return RECURSION_DEPTH / 3;
     }
 
     private void openingGambit() {

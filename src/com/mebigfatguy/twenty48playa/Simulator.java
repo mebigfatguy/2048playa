@@ -240,13 +240,7 @@ public final class Simulator {
 
     private static double regularizeScore(double score, Board board, int preFillCount) {
         score *= calculateTopHeavyness(board);
-
-        if (preFillCount == 16) {
-            int postFillCount = board.fillCount();
-            if (postFillCount == 16) {
-                score = Integer.MIN_VALUE;
-            }
-        }
+        score *= (17.0 - board.fillCount()) / 17.0;
 
         return score;
     }
@@ -254,8 +248,8 @@ public final class Simulator {
     private static double calculateTopHeavyness(Board board) {
         int topHalfScore = 0;
         int totalScore = 0;
-        int multiplier = 2;
-        int incr = -1;
+        int multiplier = 4;
+        int incr = -2;
         for (int y = 0; y < 4; y++) {
             int rowScore = 0;
             for (int x = 0; x < 4; x++) {
@@ -268,7 +262,7 @@ public final class Simulator {
             }
             totalScore += rowScore * multiplier;
             multiplier += incr;
-            incr += 1;
+            incr += 2;
         }
 
         return (double) topHalfScore / (double) totalScore;
