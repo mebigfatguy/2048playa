@@ -53,7 +53,7 @@ public final class Simulator {
                         if ((srcYType != SquareType.BLANK) && (srcYType != SquareType.STUB)) {
                             if (srcYType == yType) {
                                 simBoard.set(x, y, SquareType.values()[srcYType.ordinal() + 1]);
-                                score += Math.pow(2, ((srcYType.ordinal() + 1) - SquareType.TWO.ordinal()) + 1);
+                                score += srcYType.getValue();
                                 srcY++;
                                 for (int copyY = y + 1; copyY < 4; copyY++) {
                                     if (srcY < 4) {
@@ -107,7 +107,7 @@ public final class Simulator {
                         if ((srcYType != SquareType.BLANK) && (srcYType != SquareType.STUB)) {
                             if (srcYType == yType) {
                                 simBoard.set(x, y, SquareType.values()[srcYType.ordinal() + 1]);
-                                score += Math.pow(2, ((srcYType.ordinal() + 1) - SquareType.TWO.ordinal()) + 1);
+                                score += srcYType.getValue();
                                 srcY--;
                                 for (int copyY = y - 1; copyY >= 0; copyY--) {
                                     if (srcY >= 0) {
@@ -161,7 +161,7 @@ public final class Simulator {
                         if ((srcXType != SquareType.BLANK) && (srcXType != SquareType.STUB)) {
                             if (srcXType == xType) {
                                 simBoard.set(x, y, SquareType.values()[srcXType.ordinal() + 1]);
-                                score += Math.pow(2, ((srcXType.ordinal() + 1) - SquareType.TWO.ordinal()) + 1);
+                                score += srcXType.getValue();
                                 srcX++;
                                 for (int copyX = x + 1; copyX < 4; copyX++) {
                                     if (srcX < 4) {
@@ -215,7 +215,7 @@ public final class Simulator {
                         if ((srcXType != SquareType.BLANK) && (srcXType != SquareType.STUB)) {
                             if (srcXType == xType) {
                                 simBoard.set(x, y, SquareType.values()[srcXType.ordinal() + 1]);
-                                score += Math.pow(2, ((srcXType.ordinal() + 1) - SquareType.TWO.ordinal()) + 1);
+                                score += srcXType.getValue();
                                 srcX--;
                                 for (int copyX = x - 1; copyX >= 0; copyX--) {
                                     if (srcX >= 0) {
