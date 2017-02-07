@@ -259,7 +259,7 @@ public final class Simulator {
         for (int y = 0; y < 4; y++) {
             int rowScore = 0;
             for (int x = 0; x < 4; x++) {
-                SquareType squareType = board.get(x, 0);
+                SquareType squareType = board.get(x, y);
                 int squareValue = squareType.getValue();
                 rowScore += squareValue;
             }
