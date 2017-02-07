@@ -79,8 +79,18 @@ public class WindowManager {
                     robot.delay(2000);
                 }
             }
-            robot.delay(1000);
-            imageUtils.initialize();
+
+            int attempts = 10;
+            while (attempts > 0) {
+                robot.delay(1000);
+                try {
+                    imageUtils.initialize();
+                    return;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    // the window is taking forever to show up
+                    attempts--;
+                }
+            }
         } finally {
             if (blackWindow != null) {
                 blackWindow.dispose();
