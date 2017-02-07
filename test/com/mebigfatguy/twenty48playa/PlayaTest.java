@@ -41,7 +41,7 @@ public class PlayaTest {
         iu.setBoardState(" BLANK TWO TWO TWO " + " TWO TWO TWO BLANK " + " TWO FOUR TWO FOUR " + " FOUR TWO TWO FOUR ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateUp(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateUp(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.FOUR, newBoard.get(0, 0));
@@ -71,7 +71,7 @@ public class PlayaTest {
         iu.setBoardState(" THIRTYTWO BLANK FOUR EIGHT " + " EIGHT BLANK BLANK BLANK " + " FOUR SIXTEEN FOUR EIGHT " + " FOUR SIXTEEN SIXTEEN EIGHT ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateUp(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateUp(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.THIRTYTWO, newBoard.get(0, 0));
@@ -101,7 +101,7 @@ public class PlayaTest {
         iu.setBoardState(" BLANK TWO TWO TWO " + " TWO TWO TWO BLANK " + " TWO FOUR TWO FOUR " + " FOUR TWO TWO FOUR ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateDown(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateDown(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.BLANK, newBoard.get(0, 0));
@@ -131,7 +131,7 @@ public class PlayaTest {
         iu.setBoardState(" THIRTYTWO BLANK FOUR EIGHT " + " EIGHT BLANK BLANK BLANK " + " FOUR SIXTEEN FOUR EIGHT " + " FOUR SIXTEEN SIXTEEN EIGHT ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateDown(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateDown(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.BLANK, newBoard.get(0, 0));
@@ -161,7 +161,7 @@ public class PlayaTest {
         iu.setBoardState(" BLANK TWO TWO TWO " + " TWO TWO TWO BLANK " + " TWO FOUR TWO FOUR " + " FOUR TWO TWO FOUR ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateLeft(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateLeft(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.FOUR, newBoard.get(0, 0));
@@ -191,7 +191,7 @@ public class PlayaTest {
         iu.setBoardState(" THIRTYTWO BLANK FOUR EIGHT " + " EIGHT BLANK BLANK BLANK " + " FOUR SIXTEEN FOUR EIGHT " + " FOUR SIXTEEN SIXTEEN EIGHT ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateLeft(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateLeft(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.THIRTYTWO, newBoard.get(0, 0));
@@ -221,7 +221,7 @@ public class PlayaTest {
         iu.setBoardState(" BLANK TWO TWO TWO " + " TWO TWO TWO BLANK " + " TWO FOUR TWO FOUR " + " FOUR TWO TWO FOUR ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateRight(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateRight(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.BLANK, newBoard.get(0, 0));
@@ -251,7 +251,7 @@ public class PlayaTest {
         iu.setBoardState(" THIRTYTWO BLANK FOUR EIGHT " + " EIGHT BLANK BLANK BLANK " + " FOUR SIXTEEN FOUR EIGHT " + " FOUR SIXTEEN SIXTEEN EIGHT ");
 
         Board origBoard = iu.getBoardState();
-        Pair<Board, Integer> newSim = Simulator.simulateRight(origBoard);
+        Pair<Board, Double> newSim = Simulator.simulateRight(origBoard);
         Board newBoard = newSim.getKey();
 
         Assert.assertEquals(SquareType.BLANK, newBoard.get(0, 0));

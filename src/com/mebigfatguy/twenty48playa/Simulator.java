@@ -25,7 +25,7 @@ public final class Simulator {
     private Simulator() {
     }
 
-    public static Pair<Board, Integer> simulateUp(Board board) {
+    public static Pair<Board, Double> simulateUp(Board board) {
         Board simBoard = board.clone();
         int score = 0;
         int preFillCount = simBoard.fillCount();
@@ -69,17 +69,11 @@ public final class Simulator {
                 }
             }
         }
-        if (preFillCount == 16) {
-            int postFillCount = simBoard.fillCount();
-            if (postFillCount == 16) {
-                score = Integer.MIN_VALUE;
-            }
-        }
 
-        return new Pair<>(simBoard, Integer.valueOf(score));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
     }
 
-    public static Pair<Board, Integer> simulateDown(Board board) {
+    public static Pair<Board, Double> simulateDown(Board board) {
         Board simBoard = board.clone();
         int score = 0;
         int preFillCount = simBoard.fillCount();
@@ -123,17 +117,11 @@ public final class Simulator {
                 }
             }
         }
-        if (preFillCount == 16) {
-            int postFillCount = simBoard.fillCount();
-            if (postFillCount == 16) {
-                score = Integer.MIN_VALUE;
-            }
-        }
 
-        return new Pair<>(simBoard, Integer.valueOf(score));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
     }
 
-    public static Pair<Board, Integer> simulateLeft(Board board) {
+    public static Pair<Board, Double> simulateLeft(Board board) {
         Board simBoard = board.clone();
         int score = 0;
         int preFillCount = simBoard.fillCount();
@@ -177,17 +165,11 @@ public final class Simulator {
                 }
             }
         }
-        if (preFillCount == 16) {
-            int postFillCount = simBoard.fillCount();
-            if (postFillCount == 16) {
-                score = Integer.MIN_VALUE;
-            }
-        }
 
-        return new Pair<>(simBoard, Integer.valueOf(score));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
     }
 
-    public static Pair<Board, Integer> simulateRight(Board board) {
+    public static Pair<Board, Double> simulateRight(Board board) {
         Board simBoard = board.clone();
         int score = 0;
         int preFillCount = simBoard.fillCount();
@@ -231,14 +213,8 @@ public final class Simulator {
                 }
             }
         }
-        if (preFillCount == 16) {
-            int postFillCount = simBoard.fillCount();
-            if (postFillCount == 16) {
-                score = Integer.MIN_VALUE;
-            }
-        }
 
-        return new Pair<>(simBoard, Integer.valueOf(score));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
     }
 
     public static boolean embellishSimulation(Board board) {
@@ -260,5 +236,41 @@ public final class Simulator {
             }
         }
         return false;
+    }
+
+    private static double regularizeScore(double score, Board board, int preFillCount) {
+        score *= calculateTopHeavyness(board);
+
+        if (preFillCount == 16) {
+            int postFillCount = board.fillCount();
+            if (postFillCount == 16) {
+                score = Integer.MIN_VALUE;
+            }
+        }
+
+        return score;
+    }
+
+    private static double calculateTopHeavyness(Board board) {
+        int topHalfScore = 0;
+        int totalScore = 0;
+        int multiplier = 2;
+        int incr = -1;
+        for (int y = 0; y < 4; y++) {
+            int rowScore = 0;
+            for (int x = 0; x < 4; x++) {
+                SquareType squareType = board.get(x, 0);
+                int squareValue = squareType.getValue();
+                rowScore += squareValue;
+            }
+            if (y < 2) {
+                topHalfScore += rowScore * multiplier;
+            }
+            totalScore += rowScore * multiplier;
+            multiplier += incr;
+            incr += 1;
+        }
+
+        return (double) topHalfScore / (double) totalScore;
     }
 }

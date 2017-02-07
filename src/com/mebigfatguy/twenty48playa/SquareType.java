@@ -70,7 +70,7 @@ public enum SquareType {
             return 0;
         }
 
-        return (int) Math.pow(2, ((ordinal() + 1) - SquareType.TWO.ordinal()) + 1);
+        return (int) Math.pow(2, (ordinal() - SquareType.TWO.ordinal()) + 1);
     }
 
 }
