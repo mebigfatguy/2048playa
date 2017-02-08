@@ -30,7 +30,6 @@ public class SimulatorTest {
     public void setUp() throws AWTException {
 
         iu = new MockImageUtils();
-        WindowManager wm = new WindowManager(iu);
     }
 
     @Test
