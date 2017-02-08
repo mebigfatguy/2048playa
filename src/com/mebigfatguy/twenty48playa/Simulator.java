@@ -28,7 +28,6 @@ public final class Simulator {
     public static Pair<Board, Double> simulateUp(Board board) {
         Board simBoard = board.clone();
         int score = 0;
-        int preFillCount = simBoard.fillCount();
 
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 3; y++) {
@@ -70,13 +69,12 @@ public final class Simulator {
             }
         }
 
-        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard)));
     }
 
     public static Pair<Board, Double> simulateDown(Board board) {
         Board simBoard = board.clone();
         int score = 0;
-        int preFillCount = simBoard.fillCount();
 
         for (int x = 0; x < 4; x++) {
             for (int y = 3; y > 0; y--) {
@@ -118,13 +116,12 @@ public final class Simulator {
             }
         }
 
-        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard)));
     }
 
     public static Pair<Board, Double> simulateLeft(Board board) {
         Board simBoard = board.clone();
         int score = 0;
-        int preFillCount = simBoard.fillCount();
 
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 3; x++) {
@@ -166,13 +163,12 @@ public final class Simulator {
             }
         }
 
-        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard)));
     }
 
     public static Pair<Board, Double> simulateRight(Board board) {
         Board simBoard = board.clone();
         int score = 0;
-        int preFillCount = simBoard.fillCount();
 
         for (int y = 0; y < 4; y++) {
             for (int x = 3; x > 0; x--) {
@@ -214,7 +210,7 @@ public final class Simulator {
             }
         }
 
-        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard, preFillCount)));
+        return new Pair<>(simBoard, Double.valueOf(regularizeScore(score, simBoard)));
     }
 
     public static boolean embellishSimulation(Board board) {
@@ -238,7 +234,7 @@ public final class Simulator {
         return false;
     }
 
-    private static double regularizeScore(double score, Board board, int preFillCount) {
+    private static double regularizeScore(double score, Board board) {
         score *= calculateTopHeavyness(board);
         score *= (17.0 - board.fillCount()) / 17.0;
 
