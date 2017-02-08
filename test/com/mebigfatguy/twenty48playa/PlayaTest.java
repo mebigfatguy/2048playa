@@ -24,7 +24,6 @@ import org.junit.Test;
 
 public class PlayaTest {
 
-    private Playa playa;
     private MockImageUtils iu;
 
     @Before
@@ -32,7 +31,6 @@ public class PlayaTest {
 
         iu = new MockImageUtils();
         WindowManager wm = new WindowManager(iu);
-        playa = new Playa(iu, wm);
     }
 
     @Test
