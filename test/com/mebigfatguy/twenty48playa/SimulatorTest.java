@@ -272,4 +272,14 @@ public class SimulatorTest {
         Assert.assertEquals(SquareType.EIGHT, newBoard.get(3, 3));
 
     }
+
+    @Test
+    public void testRegularizeScore() {
+
+        iu.setBoardState(" FOUR BLANK FOUR BLANK " + " TWO TWO TWO TWO " + " BLANK BLANK BLANK SIXTEEN " + " FOUR BLANK BLANK BLANK ");
+
+        Board board = iu.getBoardState();
+
+        Assert.assertEquals(0.2647, Simulator.regularizeScore(1.0, board), 0.001);
+    }
 }

@@ -234,7 +234,7 @@ public final class Simulator {
         return false;
     }
 
-    private static double regularizeScore(double score, Board board) {
+    static double regularizeScore(double score, Board board) {
         score *= calculateTopHeavyness(board);
         score *= (17.0 - board.fillCount()) / 17.0;
 
